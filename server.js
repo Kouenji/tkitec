@@ -5,21 +5,21 @@ const multer = require('multer');
 const nodemailer = require('nodemailer'); // Added for Email System
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // ==========================================
 // 1. CRITICAL MIDDLEWARE
 // ==========================================
-app.use(express.json()); 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-// ==========================================
-// 2. CONFIGURATION & SECURITY
-// ==========================================
-const PROD_FILE = path.join(__dirname, 'products.json');
-const ORDER_FILE = path.join(__dirname, 'orders.json');
-const IMG_DIR = path.join(__dirname, 'public/assets/images');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 
+const PROD_FILE = path.join(DATA_DIR, 'products.json');
+const ORDER_FILE = path.join(DATA_DIR, 'orders.json');
+const IMG_DIR = path.join(DATA_DIR, 'assets', 'images');
+
+app.use('/assets', express.static(path.join(DATA_DIR, 'assets')));
+app.use(express.static(path.join(__dirname, 'docs')));
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "tkitec2026";
 const AUTH_TOKEN = "TKITEC_SECRET_AUTH_KEY";
