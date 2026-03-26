@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tki Tec - Shopping Cart</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <style>
+    .cart-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; margin-top: 40px; }
+    .cart-item { display: flex; align-items: center; gap: 20px; background: #161b22; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #30363d; }
+    .cart-item img { width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 8px; }
+    .item-info { flex-grow: 1; }
+    .item-info h4 { font-size: 1.8rem; margin-bottom: 5px; }
+    .item-info p { color: var(--electric-blue); font-weight: bold; }
+    .remove-btn { color: #ff4d4d; cursor: pointer; font-size: 2rem; }
+    
+    .checkout-card { background: #161b22; padding: 25px; border-radius: 12px; border: 1px solid var(--electric-blue); height: fit-content; }
+    .checkout-card h3 { margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    
+    @media (max-width: 992px) { .cart-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body id="top">
+  <header class="header"><div class="container"><a href="index.html" class="logo"><img src="./assets/images/logo.png" height="40"></a></div></header>
+
+  <main class="container">
+    <h2 class="h2" style="margin-top: 40px;">Your Shopping Cart</h2>
+    
+    <div class="cart-grid">
+        <div id="cartList">
+            <!-- Items loaded via JS -->
+        </div>
+
+        <div class="checkout-card">
+            <h3>Order Summary</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 1.8rem;">
+                <span>Total:</span>
+                <strong id="cartTotal">0 DZD</strong>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='shop.html?checkout_cart=true'">
+                Buy Now (Confirm Order)
+            </button>
+            <a href="shop.html?cat=all" style="display: block; text-align: center; margin-top: 15px; color: #8b949e;">Continue Shopping</a>
+        </div>
+    </div>
+  </main>
+
+  <script>
+    function loadCart() {
+        const cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
+        const container = document.getElementById('cartList');
+        let total = 0;
+
+        if (cart.length === 0) {
+            container.innerHTML = "<h3>Your cart is empty.</h3>";
+            document.getElementById('cartTotal').innerText = "0 DZD";
+            return;
+        }
+
+        container.innerHTML = cart.map((item, index) => {
+            total += (item.price * item.qty);
+            return `
+                <div class="cart-item">
+                    <img src="${item.image}">
+                    <div class="item-info">
+                        <h4>${item.name}</h4>
+                        <p>${Number(item.price).toLocaleString()} DZD x ${item.qty}</p>
+                    </div>
+                    <ion-icon name="trash-outline" class="remove-btn" onclick="removeItem(${index})"></ion-icon>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('cartTotal').innerText = total.toLocaleString() + " DZD";
+    }
+
+    function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem('tki_cart'));
+        cart.splice(index, 1);
+        localStorage.setItem('tki_cart', JSON.stringify(cart));
+        loadCart();
+    }
+
+    function proceedToCheckout() {
+        // Redirect to shop.html with a special flag to show checkout modal for the whole cart
+        window.location.href = "shop.html?checkout_cart=true";
+    }
+
+    loadCart();
+  </script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+</body>
+</html>
