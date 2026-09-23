@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tki Tec - Secure Login</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <style>
+        body { 
+            display: flex; align-items: center; justify-content: center; 
+            height: 100vh; padding: 0; margin: 0;
+            background: radial-gradient(circle at center, #101820 0%, #080a0d 100%);
+        }
+        .login-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        .login-card h2 { color: var(--electric-blue); margin-bottom: 30px; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        input { 
+            width: 100%; padding: 15px; margin-bottom: 20px; background: var(--bg-dark); 
+            border: 1px solid var(--border-color); color: white; border-radius: 10px; outline: none;
+            font-size: 1.6rem;
+        }
+        input:focus { border-color: var(--electric-blue); box-shadow: 0 0 10px var(--electric-glow); }
+        .error-msg { color: #ff3e3e; font-size: 1.4rem; margin-bottom: 20px; display: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <img src="./assets/images/logo.png" alt="Logo" height="45" style="margin-bottom: 20px;">
+        <h2>System Access</h2>
+        
+        <!-- Error Message Holder -->
+        <div id="errMsg" class="error-msg">Invalid Username or Password</div>
+        
+        <form id="loginForm">
+            <input type="text" id="userInput" placeholder="Username" required autocomplete="username">
+            <input type="password" id="passInput" placeholder="Password" required autocomplete="current-password">
+            <button type="submit" id="loginBtn" class="btn" style="width: 100%;">Unlock Dashboard</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const errorDiv = document.getElementById('errMsg');
+    
+    btn.innerText = "Verifying...";
+    errorDiv.style.display = 'none';
+
+    // This gets the current location (localhost:5000) automatically
+    const host = window.location.origin; 
+
+    try {
+        const response = await fetch(`${host}/api/admin/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user: document.getElementById('userInput').value,
+                pass: document.getElementById('passInput').value
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // Save token
+            localStorage.setItem('adminToken', data.token); 
+            window.location.href = 'admin.html';
+        } else {
+            errorDiv.style.display = 'block';
+            btn.innerText = "Unlock Dashboard";
+        }
+    } catch (err) {
+        console.error("Connection Error:", err);
+        errorDiv.innerText = "Connection Error: Is the server running?";
+        errorDiv.style.display = 'block';
+        btn.innerText = "Unlock Dashboard";
+    }
+});
+    </script>
+</body>
+</html>

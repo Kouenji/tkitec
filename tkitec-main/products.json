@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1773175365215,
+    "name": "pc gaming i5 + RTX 3060",
+    "price": 120000,
+    "category": "prebuilt",
+    "specs": "gaming pc high performance",
+    "isFeatured": true,
+    "image": "./assets/images/1773175365206.png"
+  },
+  {
+    "id": 1773175406197,
+    "name": "pc gaming i5 + RTX 4060",
+    "price": 200000,
+    "category": "prebuilt",
+    "specs": "gaming pc high performance",
+    "isFeatured": true,
+    "image": "./assets/images/1773175406180.png"
+  },
+  {
+    "id": 1773175422412,
+    "name": "pc gaming i5 + RTX 3060",
+    "price": 200000,
+    "category": "prebuilt",
+    "specs": "gaming pc high performance",
+    "isFeatured": true,
+    "image": "./assets/images/1773175422405.png"
+  },
+  {
+    "id": 1773175433671,
+    "name": "pc gaming i5 + RTX 3060",
+    "price": 200000,
+    "category": "prebuilt",
+    "specs": "gaming pc high performance",
+    "isFeatured": false,
+    "image": "./assets/images/1773175433665.png"
+  },
+  {
+    "id": 1773175453093,
+    "name": "pc gaming i5 + RTX 3060",
+    "price": 100000,
+    "category": "prebuilt",
+    "specs": "gaming pc high performance",
+    "isFeatured": true,
+    "image": "./assets/images/1773175453087.png"
+  },
+  {
+    "id": 1773175479431,
+    "name": "rtx  3060 12gb",
+    "price": 70000,
+    "category": "gpu",
+    "specs": "high end gpu",
+    "isFeatured": false,
+    "image": "./assets/images/1773175479430.jpg"
+  },
+  {
+    "id": 1773175508028,
+    "name": "rtx  4070 8gb",
+    "price": 100000,
+    "category": "gpu",
+    "specs": "high end gpu",
+    "isFeatured": false,
+    "image": "./assets/images/1773175508026.jpg"
+  },
+  {
+    "id": 1773175534003,
+    "name": "mouse",
+    "price": 10000,
+    "category": "mouse",
+    "specs": "mouse",
+    "isFeatured": false,
+    "image": "./assets/images/1773175534002.jpg"
+  },
+  {
+    "id": 1773175561108,
+    "name": "sog mouse",
+    "price": 5000,
+    "category": "mouse",
+    "specs": "mouse",
+    "isFeatured": false,
+    "image": "./assets/images/1773175561107.jpg"
+  },
+  {
+    "id": 1773175583854,
+    "name": "logitech mouse",
+    "price": 12000,
+    "category": "mouse",
+    "specs": "mouse",
+    "isFeatured": false,
+    "image": "./assets/images/1773175583853.jpg"
+  },
+  {
+    "id": 1773175610028,
+    "name": "keyboard",
+    "price": 10000,
+    "category": "keyboard",
+    "specs": "koeyboard",
+    "isFeatured": false,
+    "image": "./assets/images/1773175610026.jpg"
+  },
+  {
+    "id": 1773175630290,
+    "name": "keyboard 2",
+    "price": 100000,
+    "category": "keyboard",
+    "specs": "keyboard",
+    "isFeatured": false,
+    "image": "./assets/images/1773175630288.jpg"
+  },
+  {
+    "id": 1773175647261,
+    "name": "headset",
+    "price": 13000,
+    "category": "headset",
+    "specs": "headset",
+    "isFeatured": false,
+    "image": "./assets/images/1773175647259.jpg"
+  },
+  {
+    "id": 1773175671669,
+    "name": "havit headset",
+    "price": 10000,
+    "category": "headset",
+    "specs": "headset",
+    "isFeatured": false,
+    "image": "./assets/images/1773175671668.jpg"
+  },
+  {
+    "id": 1773175690066,
+    "name": "monitor",
+    "price": 50000,
+    "category": "monitor",
+    "specs": "monitor",
+    "isFeatured": false,
+    "image": "./assets/images/1773175690064.jpg"
+  },
+  {
+    "id": 1773175713050,
+    "name": "pc gaming i5 + RTX 3060",
+    "price": 50000,
+    "category": "prebuilt",
+    "specs": "",
+    "isFeatured": true,
+    "image": "./assets/images/1773175713046.png"
+  },
+  {
+    "id": 1773175871707,
+    "name": "motherboard m550",
+    "price": 12000,
+    "category": "motherboard",
+    "specs": "mb",
+    "isFeatured": false,
+    "image": "./assets/images/1773175871706.jpg"
+  },
+  {
+    "id": 1773175895009,
+    "name": "ryzen",
+    "price": 30000,
+    "category": "cpu",
+    "specs": "cpu",
+    "isFeatured": false,
+    "image": "./assets/images/1773175895007.jpg"
+  },
+  {
+    "id": 1773175917607,
+    "name": "intel i9",
+    "price": 30000,
+    "category": "cpu",
+    "specs": "cpu",
+    "isFeatured": false,
+    "image": "./assets/images/1773175917605.jpg"
+  },
+  {
+    "id": 1773175961675,
+    "name": "ram 16 gb",
+    "price": 9000,
+    "category": "ram",
+    "specs": "ram",
+    "isFeatured": false,
+    "image": "./assets/images/1773175961674.jpg"
+  },
+  {
+    "id": 1773175985765,
+    "name": "ssd 1tb",
+    "price": 20000,
+    "category": "storage",
+    "specs": "ssd",
+    "isFeatured": false,
+    "image": "./assets/images/1773175985764.jpg"
+  },
+  {
+    "id": 1773176007322,
+    "name": "hdd 1tb",
+    "price": 7000,
+    "category": "storage",
+    "specs": "hdd",
+    "isFeatured": false,
+    "image": "./assets/images/1773176007320.jpg"
+  }
+]

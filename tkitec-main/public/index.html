@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tki Tec - Elite PC Hardware & Accessories</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="./assets/js/script.js" defer></script>
+</head>
+
+<body id="top">
+
+  <!-- =========================================
+       1. HEADER SECTION (Slimmer & Fixed)
+       ========================================= -->
+  <header class="header" data-header>
+    <div class="container">
+      
+      <!-- SLIDING SEARCH OVERLAY (Right to Left) -->
+      <div class="search-wrapper" id="searchWrapper">
+        <ion-icon name="search-outline" style="font-size: 2.2rem; color: var(--electric-blue);"></ion-icon>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search components or PCs...">
+        <button class="search-close-btn" onclick="toggleSearch()"><ion-icon name="close-outline"></ion-icon></button>
+      </div>
+
+      <div class="overlay" data-overlay></div>
+
+      <a href="index.html" class="logo">
+        <img src="./assets/images/logo.png" alt="Tki Tec logo">
+      </a>
+
+      <button class="nav-open-btn" data-nav-open-btn aria-label="Open Menu">
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+
+      <nav class="navbar" data-navbar>
+        <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+
+        <ul class="navbar-list">
+          <li class="navbar-item"><a href="index.html" class="navbar-link">Home</a></li>
+          <li class="navbar-item"><a href="build.html" class="navbar-link">PC Builder</a></li>
+          
+          <li class="navbar-item dropdown">
+            <a href="#" class="navbar-link">Components <ion-icon name="chevron-down-outline"></ion-icon></a>
+            <ul class="dropdown-list">
+              <li><a href="shop.html?cat=cpu" class="dropdown-link">CPU</a></li>
+              <li><a href="shop.html?cat=gpu" class="dropdown-link">GPU</a></li>
+              <li><a href="shop.html?cat=motherboard" class="dropdown-link">Motherboards</a></li>
+              <li><a href="shop.html?cat=ram" class="dropdown-link">RAM</a></li>
+              <li><a href="shop.html?cat=storage" class="dropdown-link">SSD / HDD</a></li>
+            </ul>
+          </li>
+
+          <li class="navbar-item dropdown">
+            <a href="#" class="navbar-link">Peripherals <ion-icon name="chevron-down-outline"></ion-icon></a>
+            <ul class="dropdown-list">
+              <li><a href="shop.html?cat=keyboard" class="dropdown-link">Keyboard</a></li>
+              <li><a href="shop.html?cat=mouse" class="dropdown-link">Mouse</a></li>
+              <li><a href="shop.html?cat=headset" class="dropdown-link">Headsets</a></li>
+              <li><a href="shop.html?cat=monitor" class="dropdown-link">Monitors</a></li>
+            </ul>
+          </li>
+
+          <li class="navbar-item"><a href="shop.html?cat=prebuilt" class="navbar-link">Prebuilt PCs</a></li>
+        </ul>
+
+        <ul class="nav-action-list">
+          <li><button class="nav-action-btn" onclick="toggleSearch()"><ion-icon name="search-outline"></ion-icon></button></li>
+          <li>
+            <a href="cart.html" class="nav-action-btn">
+              <ion-icon name="cart-outline"></ion-icon>
+              <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <article>
+
+      <!-- 2. DYNAMIC FEATURED SLIDER -->
+      <section class="section mini-hero">
+        <div class="container">
+          <div class="slider-header">
+            <h2 class="h2">Featured Prebuilt Rigs</h2>
+          </div>
+
+          <div class="slider-btns">
+            <button class="ctrl-btn prev" id="slidePrev"><ion-icon name="chevron-back-outline"></ion-icon></button>
+            <button class="ctrl-btn next" id="slideNext"><ion-icon name="chevron-forward-outline"></ion-icon></button>
+          </div>
+
+          <div class="mini-slider-container" id="pcSlider">
+             <p style="padding: 20px; color: var(--text-gray);">Syncing featured systems...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. COLLECTION SECTION (ACCESSORIES LINKED TO ALL) -->
+      <section class="section collection">
+        <div class="container">
+          <ul class="collection-list">
+            <li>
+              <div class="collection-card" style="background-image: url('./assets/images/pc.jpg')">
+                <h3 class="h4 card-title">Gaming PCs</h3>
+                <a href="shop.html?cat=prebuilt" class="btn btn-secondary">Explore</a>
+              </div>
+            </li>
+            <li>
+              <div class="collection-card" style="background-image: url('./assets/images/gpu.jpg')">
+                <h3 class="h4 card-title">GPUs</h3>
+                <a href="shop.html?cat=gpu" class="btn btn-secondary">View Stock</a>
+              </div>
+            </li>
+            <li>
+              <div class="collection-card" style="background-image: url('./assets/images/pc accessories.webp')">
+                <h3 class="h4 card-title">Accessories</h3>
+                <a href="shop.html?cat=all" class="btn btn-secondary">View All</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4. LATEST Latest Tactical Gear GRID -->
+      <section class="section product" id="gear-section">
+        <div class="container">
+          
+          <h2 class="h2 section-title">Latest Tactical Gear</h2>
+          
+          <!-- Filter Tags -->
+          <ul class="filter-list">
+            <li><a href="shop.html?cat=all" class="filter-btn">All Items</a></li>
+            <li><a href="shop.html?cat=cpu" class="filter-btn">Processors</a></li>
+            <li><a href="shop.html?cat=gpu" class="filter-btn">Graphics Cards</a></li>
+            <li><a href="shop.html?cat=storage" class="filter-btn">Storage</a></li>
+            <li><a href="shop.html?cat=ram" class="filter-btn">Memory</a></li>
+            <li><a href="shop.html?cat=mouse" class="filter-btn">Mice</a></li>
+            <li><a href="shop.html?cat=keyboard" class="filter-btn">Keyboards</a></li>
+            <li><a href="shop.html?cat=monitor" class="filter-btn">Monitors</a></li>
+          </ul>
+
+          <!-- ARROWS (Fixed Placement) -->
+          <div class="slider-btns">
+            <button class="ctrl-btn prev" id="hardwarePrev"><ion-icon name="chevron-back-outline"></ion-icon></button>
+            <button class="ctrl-btn next" id="hardwareNext"><ion-icon name="chevron-forward-outline"></ion-icon></button>
+          </div>
+
+          <!-- Slider Container -->
+          <div class="mini-slider-container" id="hardwareSlider">
+             <p style="padding: 20px; color: var(--text-gray);">Syncing mainframe...</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 6. SERVICES -->
+      <section class="section service">
+        <div class="container">
+          <ul class="service-list">
+            <li class="service-item">
+              <div class="service-card">
+                <div class="card-icon"><img src="./assets/images/service-1.png" width="53" height="28"></div>
+                <div><h3 class="h4 card-title">Payment on Delivery</h3><p class="card-text">Insured shipping on all rigs</p></div>
+              </div>
+            </li>
+            <li class="service-item">
+              <div class="service-card">
+                <div class="card-icon"><img src="./assets/images/service-4.png" width="40" height="40"></div>
+                <div><h3 class="h4 card-title">Tech Support</h3><p class="card-text">24/7 Expert assistance</p></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- 7. SLIM MODERN FOOTER -->
+  <footer class="footer">
+    <div class="container">
+  
+      <!-- LEFT SIDE: Brand & Socials -->
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><img src="./assets/images/logo.png" alt="Tki Tec"></a>
+        <p class="footer-text">Your Tech Destination</p>
+        <ul class="social-list">
+          <!-- Corrected TikTok Link -->
+          <li>
+            <a href="https://www.tiktok.com/@tki_tec?is_from_webapp=1&sender_device=pc" target="_blank" class="social-link">
+              <ion-icon name="logo-tiktok"></ion-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+  
+      <!-- BOTTOM: Copyright -->
+      <div class="footer-bottom">
+        <p class="copyright">&copy; 2026 Tki Tec Hardware. All Rights Reserved</p>
+      </div>
+  
+    </div>
+  </footer>
+
+  <a href="#top" class="go-top-btn" data-go-top><ion-icon name="arrow-up-outline"></ion-icon></a>
+
+  <script>
+    // --- SEARCH BAR LOGIC ---
+    const searchWrapper = document.getElementById('searchWrapper');
+    const searchInput = document.getElementById('searchInput');
+
+    function toggleSearch() {
+        searchWrapper.classList.toggle('active');
+        if (searchWrapper.classList.contains('active')) setTimeout(() => searchInput.focus(), 400);
+    }
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            if (query !== "") window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+        }
+    });
+
+    // --- DYNAMIC CONTENT ---
+    async function initHome() {
+        try {
+            const res = await fetch('/api/products');
+            const products = await res.json();
+
+            // 1. Featured Slider (Top)
+            const featured = products.filter(p => p.category === 'prebuilt' && p.isFeatured === true);
+            const pcSlider = document.getElementById('pcSlider');
+            if(featured.length > 0) {
+                pcSlider.innerHTML = featured.map(p => `
+                    <a href="product.html?id=${p.id}" class="mini-pc-card">
+                        <figure class="card-img-box"><img src="${p.image}"></figure>
+                        <div class="card-info">
+                            <h3 class="h4">${p.name}</h3>
+                            <data>${Number(p.price).toLocaleString()} DA</data>
+                        </div>
+                    </a>`).join('');
+            }
+
+            // 2. Hardware Slider (Bottom - 8 items)
+            const hardwareSlider = document.getElementById('hardwareSlider');
+            const latest8 = products.slice(-8).reverse();
+            hardwareSlider.innerHTML = latest8.map(p => `
+                <a href="product.html?id=${p.id}" class="mini-pc-card">
+                    <figure class="card-img-box" style="background:#fff;"><img src="${p.image}"></figure>
+                    <div class="card-info">
+                        <h4 class="h4">${p.name}</h4>
+                        <data style="color:var(--electric-blue); font-weight:800;">${Number(p.price).toLocaleString()} DA</data>
+                    </div>
+                </a>`).join('');
+
+            // 3. APPLY ARROW LOGIC
+            const slideNext = document.getElementById('slideNext');
+            const slidePrev = document.getElementById('slidePrev');
+            slideNext.onclick = () => { pcSlider.scrollLeft += 320; };
+            slidePrev.onclick = () => { pcSlider.scrollLeft -= 320; };
+
+            const gearNext = document.getElementById('hardwareNext');
+            const gearPrev = document.getElementById('hardwarePrev');
+            gearNext.onclick = () => { hardwareSlider.scrollLeft += 300; };
+            gearPrev.onclick = () => { hardwareSlider.scrollLeft -= 300; };
+
+        } catch (err) { console.error(err); }
+        setTimeout(() => { window.activateAutoScroll(); }, 500);
+    }
+    initHome();
+  </script>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <a href="https://wa.me/213540993181" class="whatsapp-float" target="_blank">
+    <ion-icon name="logo-whatsapp"></ion-icon>
+  </a>
+</body>
+</html>

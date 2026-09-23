@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tki Tec - Hardware Details</title>
+  
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+        --primary-font: 'Outfit', sans-serif;
+        --accent-font: 'JetBrains Mono', monospace;
+        --surface: #080a0d;
+        --card-bg: #161b22;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --btn-red: #ff3c3c;
+    }
+
+    body {
+        font-family: var(--primary-font);
+        background: var(--surface);
+        background: radial-gradient(circle at 50% 0%, #101820 0%, #080a0d 100%);
+        color: white;
+        line-height: 1.6;
+        padding-block-start: 110px; /* Perfect spacing for the fixed header */
+    }
+
+    /* 1. LAYOUT STRUCTURE */
+    .detail-wrapper {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 50px;
+        margin-top: 20px;
+        padding-bottom: 120px;
+    }
+
+    /* 2. PREMIUM SIDEBAR */
+    .sidebar-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 30px;
+        height: fit-content;
+        position: sticky;
+        top: 110px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        z-index: 10;
+        /* Scroll Logic Permission */
+        scroll-behavior: smooth;
+    }
+
+    .sidebar-card h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        border-bottom: 3px solid var(--electric-blue);
+        padding-bottom: 10px;
+    }
+
+    .nav-group { margin-bottom: 15px; }
+
+    .nav-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 15px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+        border: 1px solid transparent;
+        font-size: 1.6rem;
+    }
+
+    .nav-header:hover { border-color: var(--electric-blue); background: rgba(0, 212, 255, 0.05); }
+    .nav-header ion-icon { transition: 0.3s; font-size: 1.8rem; color: var(--electric-blue); }
+    .nav-header.active ion-icon { transform: rotate(180deg); }
+
+    .nav-submenu {
+        display: none;
+        flex-direction: column;
+        padding: 10px 5px 5px 20px;
+    }
+
+    .nav-submenu.active { display: flex; }
+
+    .sub-link {
+        padding: 10px 0;
+        color: #8b949e;
+        font-size: 1.5rem;
+        text-decoration: none;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 2px solid var(--border-color);
+        padding-left: 15px;
+        margin-bottom: 5px;
+    }
+
+    .sub-link:hover { color: var(--electric-blue); border-left-color: var(--electric-blue); transform: translateX(5px); }
+
+    /* 3. PRODUCT SHOWCASE */
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+
+    .image-vessel {
+        background: #fff;
+        border-radius: 24px;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        aspect-ratio: 1/1;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+
+    .image-vessel img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    .info-content .category-badge {
+        font-family: var(--accent-font);
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--electric-blue);
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 1px solid var(--border-glow);
+    }
+
+    .info-content h1 { font-size: 4rem; font-weight: 800; margin: 20px 0; line-height: 1.1; color: white; }
+
+    .price-block { font-size: 4.5rem; font-weight: 800; color: #fff; margin-bottom: 30px; letter-spacing: -1px; }
+    .price-block span { font-size: 2rem; color: var(--btn-red); vertical-align: top; margin-left: 5px; }
+
+    .trust-badges {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    .trust-item {
+        background: rgba(255,255,255,0.02);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.3rem;
+        color: #8b949e;
+    }
+
+    .trust-item ion-icon { font-size: 2.4rem; color: var(--electric-blue); }
+
+    /* 4. BUTTONS & QUANTITY */
+    .action-stack { display: flex; flex-direction: column; gap: 20px; }
+    
+    .qty-selector {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background: #000;
+        width: fit-content;
+        padding: 10px 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 20px;
+    }
+    
+    .qty-selector input {
+        background: none; border: none; color: white; width: 50px; text-align: center;
+        font-size: 2rem; font-family: var(--accent-font); font-weight: bold;
+    }
+
+    .button-group { display: flex; gap: 15px; }
+
+    .btn-main {
+        flex: 1;
+        padding: 20px;
+        border-radius: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: 0.4s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-cart-outline { background: transparent !important; border: 2px solid var(--electric-blue) !important; color: var(--electric-blue) !important; }
+    .btn-cart-outline:hover { background: var(--electric-blue) !important; color: #000 !important; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3); }
+
+    .btn-buy-solid { background: var(--btn-red); border: none; color: white; }
+    .btn-buy-solid:hover { background: #ff5e5e; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 60, 60, 0.3); }
+
+    /* 5. STRUCTURED SPECS */
+    .specs-section { margin-top: 80px; }
+    .specs-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+    .specs-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--border-color); }
+
+    .specs-grid-v2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 20px;
+    }
+
+    .spec-item-v2 {
+        background: rgba(255,255,255,0.02);
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        transition: 0.3s;
+    }
+
+    .spec-item-v2:hover { background: rgba(255,255,255,0.04); border-color: var(--electric-blue); }
+    .spec-item-v2 ion-icon { font-size: 2.2rem; color: var(--electric-blue); }
+    .spec-item-v2 span { font-weight: 500; font-size: 1.6rem; color: #d1d5db; }
+
+    /* MOBILE BUG FIX: Preventing Squishing and allowing smooth scroll */
+    @media (max-width: 1100px) {
+        .detail-wrapper { grid-template-columns: 1fr; }
+        .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+        .sidebar-card { 
+            position: static; 
+            width: 100%; 
+            display: flex !important; 
+            flex-direction: row !important; 
+            overflow-x: auto !important; 
+            white-space: nowrap !important; 
+            gap: 10px; 
+            padding: 15px !important; 
+            scrollbar-width: none;
+            flex-wrap: nowrap !important;
+        }
+        .sidebar-card::-webkit-scrollbar { display: none; }
+        .sidebar-card h2 { display: none; }
+        .nav-group { margin: 0; flex-shrink: 0; }
+        .sidebar-card > .sub-link, .nav-header { 
+            padding: 10px 20px !important; 
+            border-radius: 50px !important; 
+            background: rgba(255,255,255,0.05) !important; 
+            border: 1px solid var(--border-color) !important;
+            flex-shrink: 0 !important; /* PREVENTS BUGS */
+            display: inline-flex !important;
+            align-items: center;
+        }
+        .nav-submenu { display: none !important; }
+        .specs-grid-v2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body id="top">
+
+  <!-- THE LEGENDARY TOAST CONTAINER (Handled by script.js) -->
+  <div id="tkiToast" class="notification-toast"></div>
+
+  <!-- HEADER (Substantial 90px Height) -->
+  <header class="header" data-header>
+    <div class="container">
+      <div class="search-wrapper" id="searchWrapper">
+        <ion-icon name="search-outline" style="font-size: 2.2rem; color: var(--electric-blue);"></ion-icon>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search the Tki Tec database...">
+        <button class="search-close-btn" onclick="toggleSearch()"><ion-icon name="close-outline"></ion-icon></button>
+      </div>
+
+      <div class="overlay" data-overlay></div>
+
+      <!-- GO BACK -->
+      <div class="back-nav" onclick="history.back()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+        <span>Back</span>
+      </div>
+
+      <a href="index.html" class="logo"><img src="./assets/images/logo.png" alt="Tki Tec"></a>
+
+      <button class="nav-open-btn" data-nav-open-btn aria-label="Open Menu">
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+
+      <nav class="navbar" data-navbar>
+        <button class="nav-close-btn" data-nav-close-btn><ion-icon name="close-outline"></ion-icon></button>
+        <ul class="navbar-list">
+          <li><a href="index.html" class="navbar-link">Home</a></li>
+          <li><a href="build.html" class="navbar-link">PC Builder</a></li>
+          
+          <li class="navbar-item dropdown">
+            <a href="#" class="navbar-link">Components <ion-icon name="chevron-down-outline"></ion-icon></a>
+            <ul class="dropdown-list">
+              <li><a href="shop.html?cat=cpu">Processors</a></li>
+              <li><a href="shop.html?cat=gpu">Graphics Cards</a></li>
+              <li><a href="shop.html?cat=ram">Memory (RAM)</a></li>
+              <li><a href="shop.html?cat=storage">Storage (SSD/HDD)</a></li>
+              <li><a href="shop.html?cat=motherboard">Motherboards</a></li>
+            </ul>
+          </li>
+
+          <li class="navbar-item dropdown">
+            <a href="#" class="navbar-link">Peripherals <ion-icon name="chevron-down-outline"></ion-icon></a>
+            <ul class="dropdown-list">
+                <li><a href="shop.html?cat=mouse">Gaming Mice</a></li>
+                <li><a href="shop.html?cat=keyboard">Keyboards</a></li>
+                <li><a href="shop.html?cat=monitor">Monitors</a></li>
+                <li><a href="shop.html?cat=headset">Audio / Headsets</a></li>
+            </ul>
+          </li>
+
+          <li><a href="shop.html?cat=prebuilt" class="navbar-link">Prebuilt PCs</a></li>
+        </ul>
+
+        <ul class="nav-action-list">
+          <li><button class="nav-action-btn" onclick="toggleSearch()"><ion-icon name="search-outline"></ion-icon></button></li>
+          <li>
+            <a href="cart.html" class="nav-action-btn">
+              <ion-icon name="cart-outline"></ion-icon>
+              <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="detail-wrapper">
+      
+      <!-- ELITE SIDEBAR -->
+      <aside class="sidebar-card">
+        <h2>Categories</h2>
+        
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSub(this)">
+                <span>Components</span><ion-icon name="chevron-down-outline"></ion-icon>
+            </div>
+            <div class="nav-submenu">
+                <a href="shop.html?cat=cpu" class="sub-link">Processors</a>
+                <a href="shop.html?cat=gpu" class="sub-link">Graphics Cards</a>
+                <a href="shop.html?cat=motherboard" class="sub-link">Motherboards</a>
+                <a href="shop.html?cat=ram" class="sub-link">Memory (RAM)</a>
+                <a href="shop.html?cat=storage" class="sub-link">SSD / HDD</a>
+            </div>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header" onclick="toggleSub(this)">
+                <span>Peripherals</span><ion-icon name="chevron-down-outline"></ion-icon>
+            </div>
+            <div class="nav-submenu">
+                <a href="shop.html?cat=mouse" class="sub-link">Gaming Mice</a>
+                <a href="shop.html?cat=keyboard" class="sub-link">Keyboards</a>
+                <a href="shop.html?cat=headset" class="sub-link">Headsets</a>
+                <a href="shop.html?cat=monitor" class="sub-link">Monitors</a>
+            </div>
+        </div>
+
+        <a href="shop.html?cat=prebuilt" class="sub-link" style="color:white; font-weight:700; border-left: none; padding-left: 0;">
+            <ion-icon name="desktop-outline"></ion-icon> Prebuilt PCs
+        </a>
+        <a href="build.html" class="sub-link" style="color:white; font-weight:700; border-left: none; padding-left: 0;">
+            <ion-icon name="hammer-outline"></ion-icon> PC Builder
+        </a>
+      </aside>
+
+      <!-- DYNAMIC CONTENT -->
+      <article id="dynamicProductArea">
+          <div style="padding:100px; text-align:center;">
+              <p style="color:var(--text-gray)">Transmitting hardware data...</p>
+          </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><img src="./assets/images/logo.png" alt="Tki Tec" height="35"></a>
+        <p class="footer-text" style="font-size: 1.2rem; color: var(--text-gray); margin-top: 5px;">Your Tech Destination</p>
+      </div>
+      
+      <ul class="social-list" style="display: flex; gap: 15px;">
+        <li><a href="https://www.tiktok.com/@tki_tec?_r=1&_t=ZS-94f5QfKV63O" target="_blank" class="social-link"><ion-icon name="logo-tiktok" style="font-size: 2rem; color: var(--text-gray);"></ion-icon></a></li>
+      </ul>
+
+      <p class="copyright" style="font-size: 1.2rem; color: var(--text-gray);">
+        &copy; 2026 Tki Tec Hardware. All Rights Reserved. <a href="login.html" style="opacity: 0.05; font-size: 1rem; margin-left: 10px;">Management</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    let globalItem = null;
+
+    // UI CORE
+    function toggleSearch() { document.getElementById('searchWrapper').classList.toggle('active'); }
+    function toggleSub(el) {
+        el.classList.toggle('active');
+        el.nextElementSibling.classList.toggle('active');
+    }
+
+    // DYNAMIC PAGE LOADING
+    async function initProductPage() {
+        const id = new URLSearchParams(window.location.search).get('id');
+        try {
+            const res = await fetch('/api/products');
+            const data = await res.json();
+            const item = data.find(p => String(p.id) === String(id));
+
+            if(!item) {
+                document.getElementById('dynamicProductArea').innerHTML = "<h1 style='text-align:center;'>Product Not Found</h1>";
+                return;
+            }
+            globalItem = item;
+
+            const specs = (item.specs || "").split('\n').filter(l => l.trim() !== "");
+            const specsHTML = specs.map(l => `
+                <div class="spec-item-v2">
+                    <ion-icon name="flash-outline"></ion-icon>
+                    <span>${l}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('dynamicProductArea').innerHTML = `
+                <div class="hero-grid">
+                    <div class="image-vessel"><img src="${item.image}"></div>
+                    <div class="info-content">
+                        <span class="category-badge">${item.category}</span>
+                        <h1>${item.name}</h1>
+                        <div class="price-block">${Number(item.price).toLocaleString()}<span>DA</span></div>
+                        
+                        <div class="trust-badges">
+                            <div class="trust-item"><ion-icon name="shield-checkmark-outline"></ion-icon> 2-Year Warranty</div>
+                            <div class="trust-item"><ion-icon name="rocket-outline"></ion-icon> Express Delivery</div>
+                            <div class="trust-item"><ion-icon name="construct-outline"></ion-icon> Fully Tested</div>
+                            <div class="trust-item"><ion-icon name="cash-outline"></ion-icon> Payment on Delivery</div>
+                        </div>
+
+                        <div class="action-stack">
+                            <div class="qty-selector">
+                                <label style="color:#8b949e; font-weight:bold;">QTY</label>
+                                <input type="number" id="finalQty" value="1" min="1">
+                            </div>
+                            <div class="button-group">
+                                <button class="btn-main btn-cart-outline" onclick="handleCartAction(false)">Add to Cart</button>
+                                <button class="btn-main btn-buy-solid" onclick="handleCartAction(true)">Buy Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="specs-section">
+                    <div class="specs-title">TECHNICAL SPECIFICATIONS</div>
+                    <div class="specs-grid-v2">${specsHTML || '<div class="spec-item-v2"><span>Verified high-performance gear.</span></div>'}</div>
+                </div>
+            `;
+        } catch (e) { console.error(e); }
+        
+        // --- TRIGGER THE SCROLL ENGINE AFTER LOAD ---
+        if (window.activateAutoScroll) {
+            setTimeout(() => { window.activateAutoScroll(); }, 600);
+        }
+    }
+
+    // CART SYSTEM
+    function handleCartAction(goDirect) {
+        const qtyInput = document.getElementById('finalQty');
+        const qty = qtyInput ? parseInt(qtyInput.value) : 1;
+        
+        if (!globalItem) return;
+
+        let cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
+        const existingIndex = cart.findIndex(item => String(item.id) === String(globalItem.id));
+
+        if (existingIndex > -1) {
+            cart[existingIndex].qty += qty;
+        } else {
+            cart.push({
+                id: String(globalItem.id),
+                name: globalItem.name,
+                price: globalItem.price,
+                image: globalItem.image,
+                qty: qty
+            });
+        }
+
+        localStorage.setItem('tki_cart', JSON.stringify(cart));
+        if (window.updateCartBadge) window.updateCartBadge();
+
+        if (goDirect) {
+            window.location.href = `shop.html?buy_id=${globalItem.id}&qty=${qty}`;
+        } else {
+            if (window.showNotification) {
+                window.showNotification(`Success: Added ${qty}x ${globalItem.name} to gear.`, 'success');
+            }
+        }
+    }
+
+    async function init() {
+        // 1. Load the product data
+        await initProductPage(); 
+        
+        // 2. Load the cart badge count
+        if(window.updateCartBadge) window.updateCartBadge();
+        
+        // 3. Start the legendary scroll engine after a 1s delay
+        setTimeout(() => {
+            if (window.runAutoScroll) {
+                window.runAutoScroll();
+                console.log("Tactical Scroll Engine: Activated");
+            }
+        }, 1000);
+    }
+
+    // Trigger the sequence
+    init();
+  </script>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

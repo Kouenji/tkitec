@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro PC Builder - Tki Tec</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/buildstyle.css">
+</head>
+
+<body id="top">
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo"><img src="./assets/images/logo.png" width="160" height="50"></a>
+      <a href="index.html" class="btn">← Back to Store</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h2 class="h2 section-title">Custom PC Configurator</h2>
+        
+        <div class="builder-grid">
+          
+          <!-- 1. MAIN SELECTION AREA (Visible on the page) -->
+          <div class="builder-steps">
+            <div class="category-row" data-category="cpu">
+                <div class="cat-info"><h3>Processor (CPU)</h3><p id="selected-cpu-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="cpu">Choose CPU</button>
+            </div>
+            <div class="category-row" data-category="motherboard">
+                <div class="cat-info"><h3>Motherboard</h3><p id="selected-motherboard-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="motherboard">Choose MB</button>
+            </div>
+            <div class="category-row" data-category="gpu">
+                <div class="cat-info"><h3>Graphics Card (GPU)</h3><p id="selected-gpu-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="gpu">Choose GPU</button>
+            </div>
+            <div class="category-row" data-category="ram">
+                <div class="cat-info"><h3>Memory (RAM)</h3><p id="selected-ram-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="ram">Choose RAM</button>
+            </div>
+            <div class="category-row" data-category="storage">
+                <div class="cat-info"><h3>Primary Storage (SSD)</h3><p id="selected-storage-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="storage">Choose SSD</button>
+            </div>
+            <div class="category-row" data-category="cooling">
+                <div class="cat-info"><h3>CPU Cooling</h3><p id="selected-cooling-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="cooling">Choose Cooling</button>
+            </div>
+            <div class="category-row" data-category="case">
+                <div class="cat-info"><h3>PC Case</h3><p id="selected-case-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="case">Choose Case</button>
+            </div>
+            <div class="category-row" data-category="psu">
+                <div class="cat-info"><h3>Power Supply (PSU)</h3><p id="selected-psu-name" class="selected-item-display">None</p></div>
+                <button class="btn btn-secondary open-modal-btn" data-target="psu">Choose PSU</button>
+            </div>
+          </div>
+
+          <!-- 2. SUMMARY PANEL (Fixed on the right side) -->
+          <div class="builder-summary">
+            <h3 class="h3">Order Summary</h3>
+            <div class="summary-total">
+                <h4>Total Price:</h4>
+                <h2 class="h2" id="total-price">0 DZD</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-add-cart" id="add-to-cart-build" style="width: 100%;">Add to Cart</button>
+                <button class="btn btn-primary" id="buy-now-build" style="width: 100%;">Buy Now</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================
+       3. MODAL (POP-UP) STRUCTURE
+       ========================================= -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Select Component</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      
+      <!-- This MUST be empty. JavaScript will fill this with hardware items -->
+      <div class="modal-body" id="dynamicItemsList"></div>
+    </div>
+  </div>
+
+  <script src="./assets/js/builder.js"></script>
+</body>
+</html>
