@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    // --- AUTHENTICATION SHIELD ---
+    // If the browser doesn't have the secret key, go back to login
+    if (localStorage.getItem('adminToken') !== "TKITEC_SECRET_AUTH_KEY") {
+        window.location.href = 'login.html';
+    }
+</script>
+  <meta charset="UTF-8">
+  <title>Tki Tec - Elite Admin</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <style>
+    :root { --panel-bg: #161b22; --border: #30363d; --electric: #00d4ff; --danger: #ff4d4d; }
+    body { background: #0b0e14; color: white; font-family: sans-serif; padding: 20px; }
+    
+    .dashboard-grid { display: grid; grid-template-columns: 400px 1fr; gap: 25px; margin-top: 20px; }
+    .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; }
+
+    .stats-container { display: flex; gap: 20px; margin-bottom: 25px; }
+    .stat-box { flex: 1; background: var(--electric); color: black; padding: 20px; border-radius: 10px; text-align: center; }
+
+    input, select, textarea { 
+        width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0e14; 
+        border: 1px solid var(--border); color: white; border-radius: 6px; 
+    }
+
+    /* --- BEAUTIFUL UPLOAD BOX --- */
+    .upload-area {
+        border: 2px dashed var(--border);
+        background: rgba(255,255,255,0.02);
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-bottom: 20px;
+        display: block;
+    }
+    .upload-area:hover { border-color: var(--electric); background: rgba(0, 212, 255, 0.05); }
+    .upload-area ion-icon { font-size: 40px; color: var(--electric); margin-bottom: 10px; }
+    .upload-area p { font-size: 0.9rem; color: #8b949e; }
+    #imageInput { display: none; }
+
+    /* Tables & Lists */
+    .order-table { width: 100%; border-collapse: collapse; }
+    .order-table th { text-align: left; padding: 12px; color: var(--electric); border-bottom: 2px solid var(--border); }
+    .order-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    
+    .p-item { 
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 10px; background: #0b0e14; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--border);
+    }
+    .p-item img { width: 40px; height: 40px; object-fit: contain; background: white; border-radius: 4px; margin-right: 12px; }
+
+    .btn-del { background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
+    .btn-del:hover { opacity: 0.8; }
+  </style>
+</head>
+<body>
+
+  <h1>Admin Management</h1>
+
+  <div class="stats-container">
+    <div class="stat-box"><h3>Live Orders</h3><h2 id="totalOrders">0</h2></div>
+    <div class="stat-box"><h3>Total Sales</h3><h2 id="totalRevenue">0 DZD</h2></div>
+  </div>
+
+  <div class="dashboard-grid">
+    
+    <!-- ADD PRODUCT SIDEBAR -->
+    <div class="card">
+      <h3 style="margin-bottom:20px">Register New Item</h3>
+      <form id="productForm">
+        <input type="text" name="name" placeholder="Item Name (e.g. RTX 4080)" required>
+        <input type="number" name="price" placeholder="Price (DZD)" required>
+        
+        <select name="category" required>
+            <option value="" disabled selected>Select Category</option>
+            <optgroup label="Systems">
+                <option value="prebuilt">Prebuilt Gaming PC</option>
+            </optgroup>
+            <optgroup label="Hardware Components">
+                <option value="cpu">CPU (Processors)</option>
+                <option value="gpu">GPU (Graphics Cards)</option>
+                <option value="ram">RAM (Memory)</option>
+                <option value="storage">Storage (SSD/HDD)</option>
+                <option value="motherboard">Motherboards</option>
+                <option value="psu">Power Supplies</option>
+                <option value="case">PC Cases</option>
+                <option value="cooling">Cooling Systems</option>
+            </optgroup>
+            <optgroup label="Peripherals">
+                <option value="mouse">Gaming Mouse</option>
+                <option value="keyboard">Mechanical Keyboard</option>
+                <option value="headset">Headset / Audio</option>
+                <option value="monitor">Monitors</option>
+                <option value="accessory">Other Accessories</option>
+            </optgroup>
+        </select>
+
+        <textarea name="specs" placeholder="Short description / specs..."></textarea>
+        
+        <label for="imageInput" class="upload-area">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <p id="fileLabel">Click to upload product image</p>
+            <input type="file" name="image" id="imageInput" accept="image/*" required>
+        </label>
+
+        <label style="display:flex; align-items:center; gap:10px; margin-bottom:15px; cursor:pointer; font-size:0.8rem">
+            <input type="checkbox" name="isFeatured" value="true" style="width:auto; margin:0"> 
+            Feature on Home Page Slider?
+        </label>
+
+        <button type="submit" class="btn btn-primary" style="width:100%">Publish Product</button>
+      </form>
+
+      <h3 style="margin-top:30px">Shop Inventory</h3>
+      <div class="product-list-mini" id="invList"></div>
+    </div>
+
+    <!-- ORDERS TABLE -->
+    <div class="card">
+        <h3 style="margin-bottom:20px">Customer Orders</h3>
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="orderList"></tbody>
+        </table>
+      </div>
+  </div>
+
+  <script>
+    // Visual Filename Update
+    document.getElementById('imageInput').addEventListener('change', e => {
+        if(e.target.files[0]) document.getElementById('fileLabel').innerText = "Selected: " + e.target.files[0].name;
+    });
+
+    async function refreshData() {
+        const res = await fetch('/api/admin/stats');
+        const data = await res.json();
+        
+        document.getElementById('totalOrders').innerText = data.totalOrders;
+        document.getElementById('totalRevenue').innerText = data.totalRevenue.toLocaleString() + " DZD";
+        
+        // Orders
+        document.getElementById('orderList').innerHTML = data.orders.map(o => `
+            <tr>
+                <td>${o.date}</td>
+                <td>${o.customerName}<br><small style="color:#8b949e">${o.wilaya || ''}</small></td>
+                <td>${o.phone}</td>
+                <td>${o.items}</td>
+                <td>${Number(o.total).toLocaleString()} DZD</td>
+                <td><button class="btn-del" onclick="deleteOrder('${o.id}')">Remove</button></td>
+            </tr>
+        `).join('');
+
+        // Products
+        const prodRes = await fetch('/api/products');
+        const prods = await prodRes.json();
+        document.getElementById('invList').innerHTML = prods.reverse().map(p => `
+            <div class="p-item">
+                <div style="display:flex; align-items:center">
+                    <img src="${p.image}">
+                    <div>
+                        <div style="font-size:0.8rem">${p.name}</div>
+                        <small style="color:var(--electric)">${p.category} ${p.isFeatured ? '⭐' : ''}</small>
+                    </div>
+                </div>
+                <button class="btn-del" onclick="deleteProd('${p.id}')">Delete</button>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('productForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        await fetch('/api/products', { method: 'POST', body: formData });
+        e.target.reset();
+        document.getElementById('fileLabel').innerText = "Click to upload product image";
+        refreshData();
+    });
+
+    // INSTANT DELETE FUNCTIONS
+    async function deleteProd(id) {
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        refreshData();
+    }
+
+    async function deleteOrder(id) {
+        await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+        refreshData();
+    }
+
+    refreshData();
+  </script>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+</body>
+</html>
