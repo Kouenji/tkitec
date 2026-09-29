@@ -8,22 +8,22 @@
   <link rel="stylesheet" href="./assets/css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-        --primary-font: 'Outfit', sans-serif;
-        --accent-font: 'JetBrains Mono', monospace;
-        --surface: #080a0d;
-        --card-bg: #161b22;
+        --primary-font: 'IBM Plex Sans', sans-serif;
+        --accent-font: 'IBM Plex Mono', monospace;
+        --surface: #0d1215;
+        --card-bg: #151e22;
         --border-color: rgba(255, 255, 255, 0.1);
-        --btn-red: #ff3c3c;
+        --btn-red: var(--accent-red);
     }
 
     body {
         font-family: var(--primary-font);
         background: var(--surface);
-        background: radial-gradient(circle at 50% 0%, #101820 0%, #080a0d 100%);
+        background: var(--bg-dark);
         color: white;
         line-height: 1.6;
         padding-block-start: 110px; /* Perfect spacing for the fixed header */
@@ -77,7 +77,7 @@
         font-size: 1.6rem;
     }
 
-    .nav-header:hover { border-color: var(--electric-blue); background: rgba(0, 212, 255, 0.05); }
+    .nav-header:hover { border-color: var(--electric-blue); background: rgba(214, 91, 97, 0.06); }
     .nav-header ion-icon { transition: 0.3s; font-size: 1.8rem; color: var(--electric-blue); }
     .nav-header.active ion-icon { transform: rotate(180deg); }
 
@@ -126,14 +126,14 @@
 
     .info-content .category-badge {
         font-family: var(--accent-font);
-        background: rgba(0, 212, 255, 0.1);
+        background: rgba(214, 91, 97, 0.1);
         color: var(--electric-blue);
         padding: 6px 14px;
         border-radius: 50px;
         font-size: 1.2rem;
         text-transform: uppercase;
         letter-spacing: 1px;
-        border: 1px solid var(--border-glow);
+        border: 1px solid rgba(214, 91, 97, 0.36);
     }
 
     .info-content h1 { font-size: 4rem; font-weight: 800; margin: 20px 0; line-height: 1.1; color: white; }
@@ -199,12 +199,6 @@
         gap: 10px;
     }
 
-    .btn-cart-outline { background: transparent !important; border: 2px solid var(--electric-blue) !important; color: var(--electric-blue) !important; }
-    .btn-cart-outline:hover { background: var(--electric-blue) !important; color: #000 !important; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3); }
-
-    .btn-buy-solid { background: var(--btn-red); border: none; color: white; }
-    .btn-buy-solid:hover { background: #ff5e5e; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 60, 60, 0.3); }
-
     /* 5. STRUCTURED SPECS */
     .specs-section { margin-top: 80px; }
     .specs-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
@@ -263,133 +257,61 @@
         .specs-grid-v2 { grid-template-columns: 1fr; }
     }
   </style>
+    <link rel="stylesheet" href="./assets/css/product.css">
 </head>
 
 <body id="top">
 
-  <!-- THE LEGENDARY TOAST CONTAINER (Handled by script.js) -->
-  <div id="tkiToast" class="notification-toast"></div>
-
-  <!-- HEADER (Substantial 90px Height) -->
   <header class="header" data-header>
-    <div class="container">
-      <div class="search-wrapper" id="searchWrapper">
-        <ion-icon name="search-outline" style="font-size: 2.2rem; color: var(--electric-blue);"></ion-icon>
-        <input type="text" id="searchInput" class="search-input" placeholder="Search the Tki Tec database...">
-        <button class="search-close-btn" onclick="toggleSearch()"><ion-icon name="close-outline"></ion-icon></button>
-      </div>
-
-      <div class="overlay" data-overlay></div>
-
-      <!-- GO BACK -->
-      <div class="back-nav" onclick="history.back()">
-        <ion-icon name="chevron-back-outline"></ion-icon>
-        <span>Back</span>
-      </div>
-
-      <a href="index.html" class="logo"><img src="./assets/images/logo.png" alt="Tki Tec"></a>
-
-      <button class="nav-open-btn" data-nav-open-btn aria-label="Open Menu">
-        <ion-icon name="menu-outline"></ion-icon>
-      </button>
-
-      <nav class="navbar" data-navbar>
-        <button class="nav-close-btn" data-nav-close-btn><ion-icon name="close-outline"></ion-icon></button>
-        <ul class="navbar-list">
-          <li><a href="index.html" class="navbar-link">Home</a></li>
-          <li><a href="build.html" class="navbar-link">PC Builder</a></li>
-          
-          <li class="navbar-item dropdown">
-            <a href="#" class="navbar-link">Components <ion-icon name="chevron-down-outline"></ion-icon></a>
-            <ul class="dropdown-list">
-              <li><a href="shop.html?cat=cpu">Processors</a></li>
-              <li><a href="shop.html?cat=gpu">Graphics Cards</a></li>
-              <li><a href="shop.html?cat=ram">Memory (RAM)</a></li>
-              <li><a href="shop.html?cat=storage">Storage (SSD/HDD)</a></li>
-              <li><a href="shop.html?cat=motherboard">Motherboards</a></li>
-            </ul>
-          </li>
-
-          <li class="navbar-item dropdown">
-            <a href="#" class="navbar-link">Peripherals <ion-icon name="chevron-down-outline"></ion-icon></a>
-            <ul class="dropdown-list">
-                <li><a href="shop.html?cat=mouse">Gaming Mice</a></li>
-                <li><a href="shop.html?cat=keyboard">Keyboards</a></li>
-                <li><a href="shop.html?cat=monitor">Monitors</a></li>
-                <li><a href="shop.html?cat=headset">Audio / Headsets</a></li>
-            </ul>
-          </li>
-
-          <li><a href="shop.html?cat=prebuilt" class="navbar-link">Prebuilt PCs</a></li>
-        </ul>
-
-        <ul class="nav-action-list">
-          <li><button class="nav-action-btn" onclick="toggleSearch()"><ion-icon name="search-outline"></ion-icon></button></li>
-          <li>
-            <a href="cart.html" class="nav-action-btn">
-              <ion-icon name="cart-outline"></ion-icon>
-              <span class="cart-badge" id="cartBadge">0</span>
-            </a>
-          </li>
-        </ul>
+        <div class="container header-inner">
+            <a href="index.html" class="logo" aria-label="Tki Tec home"><img src="./assets/images/logo-black.png" alt="Tki Tec logo"></a>
+            <form class="header-search" action="shop.html" method="get" role="search">
+                <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+                <input type="search" name="search" placeholder="Search components, brands, specs..." aria-label="Search products">
+                <button type="submit" aria-label="Search products"><ion-icon name="arrow-forward-outline"></ion-icon></button>
+            </form>
+            <button class="nav-open-btn" data-nav-open-btn aria-label="Open menu"><ion-icon name="menu-outline"></ion-icon></button>
+            <nav class="navbar" data-navbar aria-label="Main navigation">
+                <div class="overlay" data-overlay></div>
+                <button class="nav-close-btn" data-nav-close-btn aria-label="Close menu"><ion-icon name="close-outline"></ion-icon></button>
+                <ul class="navbar-list">
+                    <li><a href="index.html" class="navbar-link">Home</a></li>
+                    <li><a href="shop.html?cat=all" class="navbar-link">Shop</a></li>
+                    <li class="navbar-item dropdown">
+                        <a href="shop.html?cat=all" class="navbar-link">Categories <ion-icon name="chevron-down-outline"></ion-icon></a>
+                        <ul class="dropdown-list">
+                            <li><a href="shop.html?cat=gpu" class="dropdown-link">GPUs</a></li>
+                            <li><a href="shop.html?cat=cpu" class="dropdown-link">CPUs</a></li>
+                            <li><a href="shop.html?cat=motherboard" class="dropdown-link">Motherboards</a></li>
+                            <li><a href="shop.html?cat=ram" class="dropdown-link">RAM</a></li>
+                            <li><a href="shop.html?cat=storage" class="dropdown-link">Storage</a></li>
+                            <li><a href="shop.html?cat=peripherals" class="dropdown-link">Accessories</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="build.html" class="navbar-link">PC Builder</a></li>
+                </ul>
+                <a class="header-whatsapp" data-whatsapp-contact href="https://wa.me/" target="_blank" rel="noopener noreferrer"><ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon><span>WhatsApp</span></a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <div class="detail-wrapper">
-      
-      <!-- ELITE SIDEBAR -->
-      <aside class="sidebar-card">
-        <h2>Categories</h2>
-        
-        <div class="nav-group">
-            <div class="nav-header" onclick="toggleSub(this)">
-                <span>Components</span><ion-icon name="chevron-down-outline"></ion-icon>
-            </div>
-            <div class="nav-submenu">
-                <a href="shop.html?cat=cpu" class="sub-link">Processors</a>
-                <a href="shop.html?cat=gpu" class="sub-link">Graphics Cards</a>
-                <a href="shop.html?cat=motherboard" class="sub-link">Motherboards</a>
-                <a href="shop.html?cat=ram" class="sub-link">Memory (RAM)</a>
-                <a href="shop.html?cat=storage" class="sub-link">SSD / HDD</a>
-            </div>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-header" onclick="toggleSub(this)">
-                <span>Peripherals</span><ion-icon name="chevron-down-outline"></ion-icon>
-            </div>
-            <div class="nav-submenu">
-                <a href="shop.html?cat=mouse" class="sub-link">Gaming Mice</a>
-                <a href="shop.html?cat=keyboard" class="sub-link">Keyboards</a>
-                <a href="shop.html?cat=headset" class="sub-link">Headsets</a>
-                <a href="shop.html?cat=monitor" class="sub-link">Monitors</a>
-            </div>
-        </div>
-
-        <a href="shop.html?cat=prebuilt" class="sub-link" style="color:white; font-weight:700; border-left: none; padding-left: 0;">
-            <ion-icon name="desktop-outline"></ion-icon> Prebuilt PCs
-        </a>
-        <a href="build.html" class="sub-link" style="color:white; font-weight:700; border-left: none; padding-left: 0;">
-            <ion-icon name="hammer-outline"></ion-icon> PC Builder
-        </a>
-      </aside>
-
-      <!-- DYNAMIC CONTENT -->
-      <article id="dynamicProductArea">
-          <div style="padding:100px; text-align:center;">
-              <p style="color:var(--text-gray)">Transmitting hardware data...</p>
-          </div>
-      </article>
-
+    <main class="container product-detail-shell">
+        <a class="detail-back-link" href="shop.html?cat=all"><ion-icon name="arrow-back-outline" aria-hidden="true"></ion-icon> Back to products</a>
+        <article id="dynamicProductArea" aria-live="polite">
+            <p class="detail-loading">Loading product details...</p>
+        </article>
     </div>
   </main>
+
+    <div class="mobile-order-bar" id="mobileOrderBar">
+        <div><span>Order directly</span><strong id="mobileOrderPrice"></strong></div>
+        <a id="mobileOrderLink" href="#" target="_blank" rel="noopener noreferrer"><ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon> Order via WhatsApp</a>
+    </div>
 
   <footer class="footer">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
       <div class="footer-brand">
-        <a href="index.html" class="logo"><img src="./assets/images/logo.png" alt="Tki Tec" height="35"></a>
+        <a href="index.html" class="logo"><img src="./assets/images/logo-black.png" alt="Tki Tec" height="35"></a>
         <p class="footer-text" style="font-size: 1.2rem; color: var(--text-gray); margin-top: 5px;">Your Tech Destination</p>
       </div>
       
@@ -403,22 +325,18 @@
     </div>
   </footer>
 
-  <script>
+    <script src="./assets/js/store-config.js"></script>
+    <script src="./assets/js/demo-products.js"></script>
+    <script src="./assets/js/storefront.js"></script>
+    <script src="./assets/js/script.js"></script>
+    <script>
     let globalItem = null;
-
-    // UI CORE
-    function toggleSearch() { document.getElementById('searchWrapper').classList.toggle('active'); }
-    function toggleSub(el) {
-        el.classList.toggle('active');
-        el.nextElementSibling.classList.toggle('active');
-    }
 
     // DYNAMIC PAGE LOADING
     async function initProductPage() {
         const id = new URLSearchParams(window.location.search).get('id');
         try {
-            const res = await fetch('/api/products');
-            const data = await res.json();
+            const data = await window.TkiStorefront.getProducts();
             const item = data.find(p => String(p.id) === String(id));
 
             if(!item) {
@@ -427,103 +345,107 @@
             }
             globalItem = item;
 
-            const specs = (item.specs || "").split('\n').filter(l => l.trim() !== "");
-            const specsHTML = specs.map(l => `
-                <div class="spec-item-v2">
-                    <ion-icon name="flash-outline"></ion-icon>
-                    <span>${l}</span>
-                </div>
-            `).join('');
+            const demoItem = window.TkiStorefront.isDemoProduct(item);
+            const images = window.TkiStorefront.productImages(item, { includePromotional: false });
+            const specs = (item.specs || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+            const specsHTML = specs.map(line => `<li>${window.TkiStorefront.escapeHtml(line)}</li>`).join('');
+            const category = window.TkiStorefront.escapeHtml(window.TkiStorefront.categoryLabel(item.category));
+            const isPrebuilt = String(item.category || '').toLowerCase() === 'prebuilt';
+            const galleryTypeClass = isPrebuilt ? 'product-gallery--prebuilt' : 'product-gallery--component';
+            const name = window.TkiStorefront.escapeHtml(item.name);
+            const available = Number(item.stock) > 0;
 
             document.getElementById('dynamicProductArea').innerHTML = `
-                <div class="hero-grid">
-                    <div class="image-vessel"><img src="${item.image}"></div>
-                    <div class="info-content">
-                        <span class="category-badge">${item.category}</span>
-                        <h1>${item.name}</h1>
-                        <div class="price-block">${Number(item.price).toLocaleString()}<span>DA</span></div>
-                        
-                        <div class="trust-badges">
-                            <div class="trust-item"><ion-icon name="shield-checkmark-outline"></ion-icon> 2-Year Warranty</div>
-                            <div class="trust-item"><ion-icon name="rocket-outline"></ion-icon> Express Delivery</div>
-                            <div class="trust-item"><ion-icon name="construct-outline"></ion-icon> Fully Tested</div>
-                            <div class="trust-item"><ion-icon name="cash-outline"></ion-icon> Payment on Delivery</div>
+                <div class="product-detail-layout">
+                    <section class="product-gallery ${galleryTypeClass}" aria-label="${name} product images">
+                        <figure class="product-gallery__main photo-stage" tabindex="0" aria-label="Product photos. Swipe or use arrow keys to browse.">
+                            <span class="photo-stage__placeholder"${images.length ? ' hidden' : ''}>Photo unavailable</span>
+                            <img id="mainProductImage" ${images.length ? `src="${window.TkiStorefront.escapeHtml(images[0])}"` : ''} alt="${name}" fetchpriority="high" decoding="async">
+                            ${images.length > 1 ? `<span class="product-gallery__index" aria-live="polite">1 / ${images.length}</span>` : ''}
+                        </figure>
+                        ${images.length > 1 ? `<div class="product-gallery__thumbs" aria-label="Choose product image">${images.map((image, index) => `
+                            <button type="button" class="product-gallery__thumb${index === 0 ? ' is-active' : ''}" data-detail-image="${window.TkiStorefront.escapeHtml(image)}" aria-label="Show image ${index + 1}" aria-pressed="${index === 0}">
+                                <img src="${window.TkiStorefront.escapeHtml(image)}" alt="" loading="lazy" decoding="async">
+                            </button>`).join('')}</div>` : ''}
+                    </section>
+                    <section class="product-detail-info">
+                        <span class="product-detail__category">${category}</span>
+                        <h1>${name}</h1>
+                        <p class="product-detail__price">${window.TkiStorefront.formatPrice(item.price)}</p>
+                        <p class="product-detail__stock ${available ? 'is-available' : 'is-unavailable'}"><span aria-hidden="true"></span>${available ? 'Available' : 'Out of stock'}</p>
+                        <p class="product-detail__summary">${window.TkiStorefront.escapeHtml(specs[0] || 'Explore the specifications below or ask our team for details.')}</p>
+                        <div class="product-detail__order-row">
+                            <label for="finalQty">Quantity</label>
+                            <input type="number" id="finalQty" value="1" min="1"${available ? ` max="${Number(item.stock)}"` : ''} inputmode="numeric">
                         </div>
-
-                        <div class="action-stack">
-                            <div class="qty-selector">
-                                <label style="color:#8b949e; font-weight:bold;">QTY</label>
-                                <input type="number" id="finalQty" value="1" min="1">
-                            </div>
-                            <div class="button-group">
-                                <button class="btn-main btn-cart-outline" onclick="handleCartAction(false)">Add to Cart</button>
-                                <button class="btn-main btn-buy-solid" onclick="handleCartAction(true)">Buy Now</button>
-                            </div>
-                        </div>
-                    </div>
+                        ${demoItem
+                            ? '<p class="product-detail__order product-detail__order--preview" aria-disabled="true">Preview only - ordering disabled</p>'
+                            : `<a class="product-detail__order" id="desktopOrderLink" href="#" target="_blank" rel="noopener noreferrer">
+                                <ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon><span>${available ? 'Order via WhatsApp' : 'Ask about availability'}</span>
+                            </a>`}
+                        ${demoItem ? '' : '<p class="product-detail__order-note">Your message opens directly in WhatsApp with this product and price.</p>'}
+                    </section>
                 </div>
 
-                <div class="specs-section">
-                    <div class="specs-title">TECHNICAL SPECIFICATIONS</div>
-                    <div class="specs-grid-v2">${specsHTML || '<div class="spec-item-v2"><span>Verified high-performance gear.</span></div>'}</div>
-                </div>
+                <section class="product-specifications" aria-labelledby="specificationsTitle">
+                    <p class="eyebrow">PRODUCT DETAILS</p>
+                    <h2 id="specificationsTitle">Specifications</h2>
+                    <ul>${specsHTML || '<li>Contact us for product specifications.</li>'}</ul>
+                </section>
             `;
-        } catch (e) { console.error(e); }
-        
-        // --- TRIGGER THE SCROLL ENGINE AFTER LOAD ---
-        if (window.activateAutoScroll) {
-            setTimeout(() => { window.activateAutoScroll(); }, 600);
-        }
-    }
 
-    // CART SYSTEM
-    function handleCartAction(goDirect) {
-        const qtyInput = document.getElementById('finalQty');
-        const qty = qtyInput ? parseInt(qtyInput.value) : 1;
-        
-        if (!globalItem) return;
-
-        let cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
-        const existingIndex = cart.findIndex(item => String(item.id) === String(globalItem.id));
-
-        if (existingIndex > -1) {
-            cart[existingIndex].qty += qty;
-        } else {
-            cart.push({
-                id: String(globalItem.id),
-                name: globalItem.name,
-                price: globalItem.price,
-                image: globalItem.image,
-                qty: qty
-            });
-        }
-
-        localStorage.setItem('tki_cart', JSON.stringify(cart));
-        if (window.updateCartBadge) window.updateCartBadge();
-
-        if (goDirect) {
-            window.location.href = `shop.html?buy_id=${globalItem.id}&qty=${qty}`;
-        } else {
-            if (window.showNotification) {
-                window.showNotification(`Success: Added ${qty}x ${globalItem.name} to gear.`, 'success');
+            if (demoItem) {
+                document.querySelector('.product-detail__order-row').style.display = 'none';
+                document.getElementById('mobileOrderBar').style.display = 'none';
+            } else {
+                const quantityInput = document.getElementById('finalQty');
+                const desktopOrderLink = document.getElementById('desktopOrderLink');
+                const mobileOrderLink = document.getElementById('mobileOrderLink');
+                document.getElementById('mobileOrderPrice').textContent = window.TkiStorefront.formatPrice(item.price);
+                const refreshOrderLinks = () => {
+                    let quantity = Math.max(1, Number.parseInt(quantityInput.value, 10) || 1);
+                    if (available) quantity = Math.min(quantity, Number(item.stock));
+                    quantityInput.value = quantity;
+                    const message = window.createProductOrderMessage(item, quantity);
+                    const orderUrl = window.createWhatsAppOrderUrl(message);
+                    desktopOrderLink.href = orderUrl;
+                    if (mobileOrderLink) mobileOrderLink.href = orderUrl;
+                };
+                quantityInput.addEventListener('input', refreshOrderLinks);
+                refreshOrderLinks();
             }
-        }
+            const galleryImage = document.getElementById('mainProductImage');
+            window.TkiStorefront.bindProductImages(document.querySelector('.product-gallery'));
+            const thumbnails = [...document.querySelectorAll('[data-detail-image]')];
+            let activeImageIndex = 0;
+            const selectImage = index => {
+                if (!images.length) return;
+                activeImageIndex = (index + images.length) % images.length;
+                window.TkiStorefront.setProductImage(galleryImage, images[activeImageIndex]);
+                const counter = document.querySelector('.product-gallery__index');
+                if (counter) counter.textContent = `${activeImageIndex + 1} / ${images.length}`;
+                thumbnails.forEach((thumbnail, thumbnailIndex) => {
+                    const active = thumbnailIndex === activeImageIndex;
+                    thumbnail.classList.toggle('is-active', active);
+                    thumbnail.setAttribute('aria-pressed', String(active));
+                });
+                const selected = thumbnails[activeImageIndex];
+                if (selected) selected.parentElement.scrollTo({ left: selected.offsetLeft - selected.parentElement.offsetLeft - (selected.parentElement.clientWidth - selected.clientWidth) / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+            };
+            thumbnails.forEach((button, index) => button.addEventListener('click', () => selectImage(index)));
+            window.TkiStorefront.bindTouchSwipe(document.querySelector('.product-gallery__main'), direction => {
+                if (images.length > 1) selectImage(activeImageIndex + direction);
+            });
+            document.querySelector('.product-gallery__main').addEventListener('keydown', event => {
+                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+                event.preventDefault();
+                selectImage(activeImageIndex + (event.key === 'ArrowRight' ? 1 : -1));
+            });
+        } catch (e) { console.error(e); }
     }
 
     async function init() {
-        // 1. Load the product data
-        await initProductPage(); 
-        
-        // 2. Load the cart badge count
-        if(window.updateCartBadge) window.updateCartBadge();
-        
-        // 3. Start the legendary scroll engine after a 1s delay
-        setTimeout(() => {
-            if (window.runAutoScroll) {
-                window.runAutoScroll();
-                console.log("Tactical Scroll Engine: Activated");
-            }
-        }, 1000);
+        await initProductPage();
     }
 
     // Trigger the sequence

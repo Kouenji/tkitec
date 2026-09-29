@@ -2,7 +2,7 @@
 
 /**
  * TKI TEC - MASTER SCRIPT (LEGENDARY EDITION)
- * Handles: Mobile Navbar, Sticky Header, Slider, Secret Shortcut, Cart Badge, and Elite Notifications
+ * Handles: Mobile Navbar, Sticky Header, Secret Shortcut, and Store Contact Links
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,28 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         }
     });
-
-
-    /**
-     * 5. CART BADGE UPDATE LOGIC (Global)
-     * Keeps the red number badge in the header in sync with LocalStorage
-     */
-    window.updateCartBadge = function() {
-        const cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
-        const badge = document.getElementById('cartBadge');
-        
-        // Sum total quantities of all items in cart
-        const totalItems = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
-
-        if (badge) {
-            badge.innerText = totalItems;
-            if (totalItems > 0) {
-                badge.classList.add('active');
-            } else {
-                badge.classList.remove('active');
-            }
-        }
-    };
 
 
     /**
@@ -234,65 +212,12 @@ window.showNotification = function(message, type = 'success') {
     }, 4000);
 };
 
-// 2. GLOBAL CART BADGE SYNC
-window.updateCartBadge = function() {
-    const cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
-    const badge = document.getElementById('cartBadge');
-    const count = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
-    if (badge) {
-        badge.innerText = count;
-        count > 0 ? badge.classList.add('active') : badge.classList.remove('active');
-    }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Nav
-    const navOpen = document.querySelector("[data-nav-open-btn]");
-    const navClose = document.querySelector("[data-nav-close-btn]");
-    const navbar = document.querySelector("[data-navbar]");
-    const overlay = document.querySelector("[data-overlay]");
-    const toggle = () => { navbar?.classList.toggle("active"); overlay?.classList.toggle("active"); };
-    [navOpen, navClose, overlay].forEach(btn => btn?.addEventListener("click", toggle));
-
-    // Admin Shortcut (Ctrl+Shift+A)
+    // Admin Shortcut (Ctrl+Shift+S)
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.shiftKey && e.key === 'S') window.location.href = 'login.html';
     });
 
-    // Global Search Toggle
-    window.toggleSearch = function() {
-        document.getElementById('searchWrapper').classList.toggle('active');
-        document.getElementById('searchInput')?.focus();
-    };
-
-    updateCartBadge();
-});
-});
-window.activateAutoScroll = function() {
-    // Select all potential horizontal scroll containers
-    const containers = document.querySelectorAll('.filter-list, .sidebar-card');
-
-    containers.forEach(list => {
-        // Clear any existing intervals to prevent double-speed bugs
-        if (list.dataset.intervalSet) return; 
-        list.dataset.intervalSet = "true";
-
-        setInterval(() => {
-            // Check if there is actually space to scroll
-            if (list.scrollWidth > list.clientWidth) {
-                const maxScroll = list.scrollWidth - list.clientWidth;
-                
-                // If we are at the end, reset to 0
-                if (list.scrollLeft >= maxScroll - 10) {
-                    list.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    // Nudge right by 150px
-                    list.scrollBy({ left: 150, behavior: 'smooth' });
-                }
-            }
-        }, 5000); // 5 Seconds
+    document.querySelectorAll('[data-whatsapp-contact]').forEach(link => {
+        link.href = window.createWhatsAppOrderUrl('Hello, I would like to ask about your PC hardware.');
     });
-};
-
-// Start trying to run it immediately
-document.addEventListener('DOMContentLoaded', window.activateAutoScroll);
+});

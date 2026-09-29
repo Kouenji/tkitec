@@ -1,195 +1,332 @@
+require('dotenv').config();
+
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const multer = require('multer');
-const nodemailer = require('nodemailer'); // Added for Email System
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const { neon } = require('@neondatabase/serverless');
+const { put, del } = require('@vercel/blob');
+const { parseImageManifest, updateProductGallery } = require('./server/product-gallery');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_PASS = process.env.ADMIN_PASS || 'tkitec2026';
+const AUTH_TOKEN = process.env.AUTH_TOKEN || 'TKITEC_SECRET_AUTH_KEY';
 
-// ==========================================
-// 1. CRITICAL MIDDLEWARE
-// ==========================================
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { files: 10, fileSize: 8 * 1024 * 1024 }
+});
+
+const getDb = () => {
+    if (!process.env.DATABASE_URL) {
+        throw new Error('DATABASE_URL is required for the Neon database.');
+    }
+    return neon(process.env.DATABASE_URL);
+};
+
+const getBlobToken = () => {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        throw new Error('BLOB_READ_WRITE_TOKEN is required for product images.');
+    }
+    return process.env.BLOB_READ_WRITE_TOKEN;
+};
+
+const transporter = process.env.SMTP_USER && process.env.SMTP_PASS
+    ? nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+    })
+    : null;
+
 app.use(express.json());
+app.use(express.static(require('path').join(__dirname, 'docs')));
 
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
+function requireAdmin(req, res, next) {
+    const token = req.get('authorization')?.replace(/^Bearer\s+/i, '') || req.get('x-admin-token');
+    if (token !== AUTH_TOKEN) return res.status(401).json({ error: 'Admin authorization required.' });
+    next();
+}
 
-const PROD_FILE = path.join(DATA_DIR, 'products.json');
-const ORDER_FILE = path.join(DATA_DIR, 'orders.json');
-const IMG_DIR = path.join(DATA_DIR, 'assets', 'images');
+function parseBoolean(value) {
+    return value === true || value === 'true' || value === 'on' || value === '1';
+}
 
-app.use('/assets', express.static(path.join(DATA_DIR, 'assets')));
-app.use(express.static(path.join(__dirname, 'docs')));
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "tkitec2026";
-const AUTH_TOKEN = "TKITEC_SECRET_AUTH_KEY";
+function parseProductFields(body) {
+    return {
+        name: String(body.name || '').trim(),
+        price: Number(body.price),
+        stock: Math.max(0, Number.parseInt(body.stock || '0', 10) || 0),
+        category: String(body.category || '').trim(),
+        specs: String(body.specs || '').trim(),
+        isFeatured: parseBoolean(body.isFeatured)
+    };
+}
 
-// --- EMAIL CONFIGURATION (GMAIL) ---
-// Note: Use a Google "App Password", not your regular password.
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'your-email@gmail.com', // Your business email
-        pass: 'xxxx xxxx xxxx xxxx'     // Your 16-character App Password
+function validateProduct(product) {
+    if (!product.name || !product.category || !Number.isFinite(product.price) || product.price < 0) {
+        return 'Name, category, and a non-negative price are required.';
     }
-});
+    return null;
+}
 
-// Ensure folders and files exist
-if (!fs.existsSync(IMG_DIR)) fs.mkdirSync(IMG_DIR, { recursive: true });
-const checkFile = (f) => { if (!fs.existsSync(f)) fs.writeFileSync(f, '[]'); };
-checkFile(PROD_FILE);
-checkFile(ORDER_FILE);
+function shapeProduct(row) {
+    const images = (row.images || []).filter(image => image?.url);
+    const mainImage = images.find(image => image.is_main)?.url || images[0]?.url || '';
+    return {
+        id: String(row.id),
+        name: row.name,
+        price: Number(row.price),
+        stock: row.stock,
+        category: row.category,
+        specs: row.specs,
+        isFeatured: row.is_featured,
+        main_image: mainImage,
+        images: images.map(image => image.url),
+        image: mainImage
+    };
+}
 
-// ==========================================
-// 3. FILE UPLOAD SETUP (MULTER)
-// ==========================================
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, IMG_DIR),
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + path.extname(file.originalname);
-        cb(null, uniqueSuffix);
-    }
-});
-const upload = multer({ storage: storage });
+async function listProducts() {
+    const sql = getDb();
+    const rows = await sql`
+        SELECT p.id, p.name, p.price, p.stock, p.category, p.specs, p.is_featured,
+               COALESCE(
+                   json_agg(
+                       json_build_object(
+                           'url', pi.url,
+                           'is_main', pi.is_main,
+                           'sort_order', pi.sort_order
+                       ) ORDER BY pi.sort_order, pi.id
+                   ) FILTER (WHERE pi.id IS NOT NULL), '[]'::json
+               ) AS images
+        FROM products p
+        LEFT JOIN product_images pi ON pi.product_id = p.id
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+    `;
+    return rows.map(shapeProduct);
+}
 
-// ==========================================
-// 4. DATABASE HELPERS
-// ==========================================
-const getData = (file) => JSON.parse(fs.readFileSync(file, 'utf8') || '[]');
-const saveData = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 2));
+async function getProduct(id) {
+    const products = await listProducts();
+    return products.find(product => String(product.id) === String(id));
+}
 
-// ==========================================
-// 5. SECURITY: ADMIN LOGIN API
-// ==========================================
+async function uploadImages(files) {
+    const token = getBlobToken();
+    return Promise.all((files || []).map(async file => {
+        const safeName = file.originalname.replace(/[^a-z0-9._-]/gi, '-').toLowerCase();
+        const blob = await put(`products/${crypto.randomUUID()}-${safeName}`, file.buffer, {
+            access: 'public',
+            addRandomSuffix: false,
+            contentType: file.mimetype,
+            token
+        });
+        return { url: blob.url, pathname: blob.pathname };
+    }));
+}
+
+async function deleteBlobImages(images) {
+    const token = getBlobToken();
+    await Promise.all((images || []).map(image => image?.url ? del(image.url, { token }) : Promise.resolve()));
+}
+
+function collectFiles(files) {
+    if (Array.isArray(files)) return files;
+    return Object.values(files || {}).flat();
+}
+
 app.post('/api/admin/login', (req, res) => {
     const { user, pass } = req.body;
-    console.log(`[Security] Login attempt: ${user}`);
     if (user === ADMIN_USER && pass === ADMIN_PASS) {
-        res.json({ success: true, token: AUTH_TOKEN });
-    } else {
-        res.status(401).json({ success: false, message: "Invalid credentials" });
+        return res.json({ success: true, token: AUTH_TOKEN });
+    }
+    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+});
+
+app.get('/api/products', async (req, res) => {
+    try {
+        res.json(await listProducts());
+    } catch (error) {
+        console.error('[Products] List failed:', error.message);
+        res.status(503).json({ error: 'Product database unavailable.' });
     }
 });
 
-// ==========================================
-// 6. API: PRODUCTS
-// ==========================================
-app.get('/api/products', (req, res) => res.json(getData(PROD_FILE)));
-
-app.post('/api/products', upload.single('image'), (req, res) => {
+app.get('/api/products/:id', async (req, res) => {
     try {
-        const products = getData(PROD_FILE);
-        const newProd = {
-            id: Date.now(),
-            name: req.body.name,
-            price: Number(req.body.price),
-            category: req.body.category,
-            specs: req.body.specs,
-            isFeatured: req.body.isFeatured === 'true',
-            image: req.file ? `./assets/images/${req.file.filename}` : './assets/images/default.jpg'
-        };
-        products.push(newProd);
-        saveData(PROD_FILE, products);
-        console.log(`[Inventory] Added: ${newProd.name}`);
+        const product = await getProduct(req.params.id);
+        if (!product) return res.status(404).json({ error: 'Product not found.' });
+        res.json(product);
+    } catch (error) {
+        console.error('[Products] Detail failed:', error.message);
+        res.status(503).json({ error: 'Product database unavailable.' });
+    }
+});
+
+async function createProduct(req, res) {
+    try {
+        const product = parseProductFields(req.body);
+        const validationError = validateProduct(product);
+        const files = collectFiles(req.files);
+        if (validationError) return res.status(400).json({ error: validationError });
+        if (!files.length) return res.status(400).json({ error: 'At least one product image is required.' });
+        if (!process.env.BLOB_READ_WRITE_TOKEN) {
+            return res.status(503).json({ error: 'Image storage is not configured. Set BLOB_READ_WRITE_TOKEN on the server before uploading products.' });
+        }
+        if (!process.env.DATABASE_URL) {
+            return res.status(503).json({ error: 'Product database is not configured. Set DATABASE_URL on the server before uploading products.' });
+        }
+
+        const uploadedImages = await uploadImages(files);
+        const sql = getDb();
+        const [created] = await sql`
+            INSERT INTO products (name, price, stock, category, specs, is_featured)
+            VALUES (${product.name}, ${product.price}, ${product.stock}, ${product.category}, ${product.specs}, ${product.isFeatured})
+            RETURNING id
+        `;
+
+        for (const [index, image] of uploadedImages.entries()) {
+            await sql`
+                INSERT INTO product_images (product_id, url, blob_pathname, alt_text, sort_order, is_main)
+                VALUES (${created.id}, ${image.url}, ${image.pathname}, ${product.name}, ${index}, ${index === 0})
+            `;
+        }
+
+        res.status(201).json(await getProduct(created.id));
+    } catch (error) {
+        console.error('[Products] Create failed:', error);
+        res.status(500).json({ error: 'Product creation failed.' });
+    }
+}
+
+app.post('/api/products', requireAdmin, upload.array('images', 10), createProduct);
+
+app.patch('/api/products/:id', requireAdmin, upload.array('images', 10), async (req, res) => {
+    try {
+        const product = parseProductFields(req.body);
+        const validationError = validateProduct(product);
+        if (validationError) return res.status(400).json({ error: validationError });
+
+        const current = await getProduct(req.params.id);
+        if (!current) return res.status(404).json({ error: 'Product not found.' });
+
+        const sql = getDb();
+        if (req.body.imageManifest !== undefined) {
+            const files = collectFiles(req.files);
+            let manifest;
+            try {
+                manifest = parseImageManifest(req.body.imageManifest, current.images, files.length);
+            } catch (error) {
+                return res.status(400).json({ error: error.message });
+            }
+            await updateProductGallery({ sql, id: req.params.id, product, manifest, files, uploadImages, deleteBlobImages });
+            return res.json(await getProduct(req.params.id));
+        }
+        await sql`
+            UPDATE products
+            SET name = ${product.name}, price = ${product.price}, stock = ${product.stock},
+                category = ${product.category}, specs = ${product.specs},
+                is_featured = ${product.isFeatured}, updated_at = NOW()
+            WHERE id = ${req.params.id}
+        `;
+
+        const files = collectFiles(req.files);
+        if (files.length) {
+            const uploadedImages = await uploadImages(files);
+            const oldImages = await sql`
+                SELECT url FROM product_images WHERE product_id = ${req.params.id}
+            `;
+            await sql`DELETE FROM product_images WHERE product_id = ${req.params.id}`;
+            await deleteBlobImages(oldImages);
+            for (const [index, image] of uploadedImages.entries()) {
+                await sql`
+                    INSERT INTO product_images (product_id, url, blob_pathname, alt_text, sort_order, is_main)
+                    VALUES (${req.params.id}, ${image.url}, ${image.pathname}, ${product.name}, ${index}, ${index === 0})
+                `;
+            }
+        }
+
+        res.json(await getProduct(req.params.id));
+    } catch (error) {
+        console.error('[Products] Update failed:', error);
+        res.status(500).json({ error: 'Product update failed.' });
+    }
+});
+
+app.delete('/api/products/:id', requireAdmin, async (req, res) => {
+    try {
+        const sql = getDb();
+        const images = await sql`SELECT url FROM product_images WHERE product_id = ${req.params.id}`;
+        const result = await sql`DELETE FROM products WHERE id = ${req.params.id} RETURNING id`;
+        if (!result.length) return res.status(404).json({ error: 'Product not found.' });
+        await deleteBlobImages(images);
         res.json({ success: true });
-    } catch (e) { res.status(500).json({ error: "Upload failed" }); }
+    } catch (error) {
+        console.error('[Products] Delete failed:', error);
+        res.status(500).json({ error: 'Product deletion failed.' });
+    }
 });
 
-app.delete('/api/products/:id', (req, res) => {
-    const products = getData(PROD_FILE).filter(p => String(p.id) !== String(req.params.id));
-    saveData(PROD_FILE, products);
-    res.json({ success: true });
-});
-
-// ==========================================
-// 7. API: ORDERS & EMAIL SYSTEM
-// ==========================================
-app.get('/api/admin/stats', (req, res) => {
-    const orders = getData(ORDER_FILE);
-    const rev = orders.reduce((s, o) => s + Number(o.total), 0);
-    res.json({ orders: orders.reverse(), totalOrders: orders.length, totalRevenue: rev });
-});
-
-app.delete('/api/orders/:id', (req, res) => {
-    const orders = getData(ORDER_FILE).filter(o => String(o.id) !== String(req.params.id));
-    saveData(ORDER_FILE, orders);
-    res.json({ success: true });
-});
-
-app.post('/api/orders', (req, res) => {
+app.get('/api/admin/stats', requireAdmin, async (req, res) => {
     try {
-        const orders = getData(ORDER_FILE);
-        const newOrder = {
-            id: Date.now(),
-            date: new Date().toLocaleString('en-GB'),
-            customerName: req.body.customerName,
-            customerEmail: req.body.customerEmail, // Added Email to Database
-            phone: req.body.phone,
-            wilaya: req.body.wilaya,
-            address: req.body.address,
-            deliveryType: req.body.deliveryType,
-            items: req.body.items,
-            total: Number(req.body.total)
-        };
-
-        orders.push(newOrder);
-        saveData(ORDER_FILE, orders);
-
-        // --- LEGENDARY EMAIL TEMPLATE ---
-        const mailOptions = {
-            from: '"Tki Tec Hardware" <your-email@gmail.com>',
-            to: newOrder.customerEmail,
-            subject: `Order Confirmed #${newOrder.id} - Tki Tec`,
-            html: `
-            <div style="background:#080a0d; color:#f0f6fc; font-family:sans-serif; padding:40px; border-radius:20px; border:1px solid #00d4ff; max-width:600px; margin:auto;">
-                <h1 style="color:#00d4ff; text-align:center; border-bottom:1px solid #30363d; padding-bottom:20px;">Protocol: Order Confirmed</h1>
-                <p style="font-size:16px;">Greetings <b>${newOrder.customerName}</b>,</p>
-                <p style="color:#8b949e;">Your tactical hardware request has been received and processed by our mainframe. Our logistics team will contact you shortly.</p>
-                
-                <div style="background:#161b22; padding:25px; border-radius:15px; border:1px solid #30363d; margin:30px 0;">
-                    <h3 style="margin-top:0; color:#00d4ff; font-size:18px; text-transform:uppercase;">Manifest Summary:</h3>
-                    <p style="margin:5px 0;"><b>Equipment:</b> ${newOrder.items}</p>
-                    <p style="margin:5px 0;"><b>Total Investment:</b> <span style="color:#ff3c3c; font-weight:bold;">${newOrder.total.toLocaleString()} DA</span></p>
-                    <p style="margin:5px 0;"><b>Destination:</b> ${newOrder.wilaya}, ${newOrder.address}</p>
-                    <p style="margin:5px 0;"><b>Method:</b> ${newOrder.deliveryType}</p>
-                </div>
-
-                <p style="text-align:center; color:#8b949e; font-size:12px; margin-top:40px; border-top:1px solid #30363d; padding-top:20px;">
-                    This is an automated transmission from Tki Tec Hardware Algeria. <br>
-                    Keep this receipt for your records.
-                </p>
-            </div>`
-        };
-
-        // Send Email
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log("Email Error:", error);
-            else console.log(`[Order] Email Sent: ${newOrder.customerEmail}`);
+        const sql = getDb();
+        const [summary] = await sql`SELECT COUNT(*)::int AS total_orders, COALESCE(SUM(total), 0) AS total_revenue FROM orders`;
+        const orders = await sql`SELECT id, date, customer_name AS "customerName", customer_email AS "customerEmail", phone, wilaya, address, delivery_type AS "deliveryType", items, total FROM orders ORDER BY date DESC`;
+        res.json({
+            orders: orders.map(order => ({ ...order, id: String(order.id), total: Number(order.total) })),
+            totalOrders: summary.total_orders,
+            totalRevenue: Number(summary.total_revenue)
         });
-
-        console.log(`[Order] New sale confirmed: ${newOrder.customerName}`);
-        res.json({ success: true });
-
-    } catch (e) {
-        console.error("Order process error:", e);
-        res.status(500).json({ error: "Order failed" });
+    } catch (error) {
+        console.error('[Admin] Stats failed:', error.message);
+        res.status(503).json({ error: 'Admin database unavailable.' });
     }
 });
 
-// ==========================================
-// 8. START SERVER
-// ==========================================
-app.listen(PORT, () => {
-    console.clear();
-    console.log(`
-    ================================================
-    🚀 TKI TEC HARDWARE - LEGENDARY SERVER LIVE
-    ================================================
-    
-    🌐 URL: http://localhost:${PORT}/index.html
-    🔐 LOGIN: http://localhost:${PORT}/login.html
-    
-    Status: Email & Database Sync Active.
-    ================================================
-    `);
+app.delete('/api/orders/:id', requireAdmin, async (req, res) => {
+    try {
+        const sql = getDb();
+        await sql`DELETE FROM orders WHERE id = ${req.params.id}`;
+        res.json({ success: true });
+    } catch (error) {
+        console.error('[Orders] Delete failed:', error.message);
+        res.status(500).json({ error: 'Order deletion failed.' });
+    }
 });
+
+app.post('/api/orders', async (req, res) => {
+    try {
+        const order = req.body;
+        const sql = getDb();
+        const [created] = await sql`
+            INSERT INTO orders (customer_name, customer_email, phone, wilaya, address, delivery_type, items, total)
+            VALUES (${order.customerName}, ${order.customerEmail}, ${order.phone}, ${order.wilaya}, ${order.address}, ${order.deliveryType}, ${order.items}, ${Number(order.total)})
+            RETURNING id, date
+        `;
+
+        if (transporter) {
+            transporter.sendMail({
+                from: `Tki Tec Hardware <${process.env.SMTP_USER}>`,
+                to: order.customerEmail,
+                subject: `Order Confirmed #${created.id} - Tki Tec`,
+                text: `Your order for ${order.items} has been received. Total: ${Number(order.total).toLocaleString()} DZD.`
+            }).catch(error => console.error('[Email] Send failed:', error.message));
+        }
+
+        res.json({ success: true, id: String(created.id) });
+    } catch (error) {
+        console.error('[Orders] Create failed:', error.message);
+        res.status(500).json({ error: 'Order failed.' });
+    }
+});
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`TKI TEC server listening at http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;

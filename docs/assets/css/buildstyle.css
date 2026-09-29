@@ -90,5 +90,16 @@
 
 .modal-item:hover {
   border-color: var(--electric-blue);
-  background: rgba(0, 212, 255, 0.05);
+  background: rgba(214, 91, 97, 0.06);
+}
+
+.builder-whatsapp { background: var(--whatsapp-green); color: #072b13; }
+.builder-whatsapp:hover { background: #48df80; color: #072b13; }
+.builder-whatsapp ion-icon { font-size: 2rem; }
+
+@media (max-width: 680px) {
+  .category-row { gap: 12px; padding: 16px; }
+  .category-row h3 { font-size: 1.45rem; }
+  .category-row .btn { padding: 9px 12px; font-size: 1.05rem; }
+  .builder-summary { position: sticky; bottom: 0; z-index: 10; padding: 16px; border: 1px solid var(--border-color); background: var(--bg-surface); }
 }

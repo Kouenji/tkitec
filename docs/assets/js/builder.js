@@ -101,29 +101,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             id: "BUILD-" + Date.now(),
             name: "Custom Configured PC",
             price: total,
-            qty: 1,
             image: "./assets/images/pc.jpg",
             specs: specs
         };
     }
 
-    // Cart Buttons
-    document.getElementById('add-to-cart-build').onclick = () => {
+    document.getElementById('order-build-whatsapp').onclick = () => {
         const build = bundleBuild();
-        if(!build) return;
-        let cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
-        cart.push(build);
-        localStorage.setItem('tki_cart', JSON.stringify(cart));
-        if(window.updateCartBadge) window.updateCartBadge();
-        alert("✅ Build saved to cart!");
-    };
-
-    document.getElementById('buy-now-build').onclick = () => {
-        const build = bundleBuild();
-        if(!build) return;
-        let cart = JSON.parse(localStorage.getItem('tki_cart')) || [];
-        cart.push(build);
-        localStorage.setItem('tki_cart', JSON.stringify(cart));
-        window.location.href = "shop.html?checkout_cart=true";
+        if (!build) return;
+        const message = window.createBuildOrderMessage(build);
+        window.open(window.createWhatsAppOrderUrl(message), '_blank', 'noopener,noreferrer');
     };
 });
