@@ -22,6 +22,13 @@ async function openAdmin(t, token = 'TKITEC_SECRET_AUTH_KEY') {
     const context = await browser.newContext();
     t.after(() => context.close());
     await context.addInitScript(value => localStorage.setItem('adminToken', value), token);
+    await context.addInitScript(() => {
+        window.compressionCalls = [];
+        window.imageCompression = async (file, options) => {
+            window.compressionCalls.push({ name: file.name, options });
+            return new File(['compressed image'], file.name, { type: file.type });
+        };
+    });
     await context.route('**/*', route => route.request().url().startsWith(base) ? route.continue() : route.abort());
     await context.route('**/api/admin/stats', route => route.fulfill({ json: { totalOrders: 0, totalRevenue: 0, orders: [] } }));
     await context.route('**/api/products', route => route.request().method() === 'GET' ? route.fulfill({ json: [] }) : route.continue());
@@ -56,15 +63,31 @@ test('rejected upload keeps the form and selected images, and displays the error
 test('successful upload sends the stored token and clears the form after saving', async t => {
     const page = await openAdmin(t);
     let authorization;
+    let payload;
     await page.route('**/api/products', async route => {
         if (route.request().method() !== 'POST') return route.fallback();
         authorization = route.request().headers().authorization;
+        payload = route.request().postDataBuffer().toString();
         await route.fulfill({ status: 201, json: { id: '123' } });
     });
     await fillProduct(page);
+    await page.locator('#productImages').setInputFiles({ name: 'case.png', mimeType: 'image/png', buffer: Buffer.from('second fixture') });
     await page.getByRole('button', { name: 'Publish Product' }).click();
     await page.waitForLoadState('networkidle');
     assert.equal(authorization, 'Bearer TKITEC_SECRET_AUTH_KEY');
+    assert.match(payload, /name="name"\r\n\r\nUpload regression product/);
+    assert.match(payload, /name="price"\r\n\r\n1500/);
+    assert.match(payload, /name="category"\r\n\r\ncpu/);
+    assert.match(payload, /name="images"; filename="cpu.png"/);
+    assert.match(payload, /name="stock"\r\n\r\n0/);
+    assert.match(payload, /name="isFeatured"\r\n\r\ntrue/);
+    assert.match(payload, /name="images"; filename="case.png"/);
+    assert.equal(payload.match(/compressed image/g)?.length, 2);
+    assert.deepEqual(await page.evaluate(() => window.compressionCalls), [{
+        name: 'cpu.png', options: { maxSizeMB: 0.3, maxWidthOrHeight: 1920, useWebWorker: true }
+    }, {
+        name: 'case.png', options: { maxSizeMB: 0.3, maxWidthOrHeight: 1920, useWebWorker: true }
+    }]);
     assert.equal(await page.locator('[name=name]').inputValue(), '');
     assert.match(await page.locator('#adminMessage').innerText(), /published|saved/i);
 });

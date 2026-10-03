@@ -161,7 +161,7 @@ test('homepage puts prebuilt PCs before components and handles an empty prebuilt
     assert.notEqual(componentsSection, -1, 'homepage should include a components section');
     assert.ok(prebuiltSection < componentsSection, 'prebuilt PCs should appear before components');
     assert.match(homepage, /Prebuilt PCs/);
-    assert.match(homepage, /id="componentsHeading">Components/);
+    assert.match(homepage, /id="componentsHeading">PCs &amp; Components/);
     assert.doesNotMatch(homepage, /Algerian store|WhatsApp ordering|Hardware specialists|Fast response|hero-trust/);
     assert.match(homeScript, /category: 'prebuilt'/);
     assert.match(homeScript, /No PCs available/);

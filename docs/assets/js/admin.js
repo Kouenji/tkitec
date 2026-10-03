@@ -138,14 +138,19 @@ class ProductEditor {
         for (const image of this.images) if (image.file) transfer.items.add(image.file);
         this.input.files = transfer.files;
     }
-    data() {
+    async data() {
         const data = new FormData(this.form);
         data.delete('images');
         const manifest = [];
         let index = 0;
         for (const image of this.images) {
             if (image.file) {
-                data.append('images', image.file);
+                const compressed = await window.imageCompression(image.file, {
+                    maxSizeMB: 0.5,
+                    maxWidthOrHeight: 1080,
+                    useWebWorker: true
+                });
+                data.append('images', compressed, image.file.name);
                 manifest.push({ upload: index++ });
             } else manifest.push({ url: image.url });
         }
@@ -155,22 +160,27 @@ class ProductEditor {
     async save() {
         if (this.busy || !this.form.reportValidity()) return;
         if (!this.images.length) { this.message('Choose at least one product image.', true); this.input.focus(); return; }
-        const data = this.data(); // Build before disabling form controls.
+        const dataPromise = this.data(); // Capture form fields before disabling controls.
         const button = this.form.querySelector('.submit-button');
         this.busy = true;
         this.form.querySelector('fieldset').disabled = true;
         button.textContent = this.product ? 'Saving…' : 'Publishing…';
         this.form.querySelector('.upload-progress').hidden = false;
+        const hasFiles = this.images.some(image => image.file);
+        let uploading = !hasFiles;
         const updateProgress = percent => {
             const progress = this.form.querySelector('progress');
             if (percent === null || percent === 100) progress.removeAttribute('value');
             else progress.value = percent;
-            this.form.querySelector('.progress-text').textContent = percent === 100 ? 'Saving product…' : 'Uploading images…';
+            this.form.querySelector('.progress-text').textContent = !uploading ? 'Compressing images…' : percent === 100 ? 'Saving product…' : 'Uploading images…';
             this.form.querySelector('.progress-percent').textContent = percent === null || percent === 100 ? '' : `${percent}%`;
         };
-        updateProgress(this.images.some(image => image.file) ? 0 : 100);
+        updateProgress(hasFiles ? null : 100);
         this.message('');
         try {
+            const data = await dataPromise;
+            uploading = true;
+            if (hasFiles) updateProgress(0);
             const updated = await uploadRequest(this.product ? `/api/products/${encodeURIComponent(this.product.id)}` : '/api/products', this.product ? 'PATCH' : 'POST', data, updateProgress);
             this.dirty = false;
             const success = this.product ? 'Product changes saved.' : 'Product published successfully.';

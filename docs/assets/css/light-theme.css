@@ -1,0 +1,195 @@
+/* Shared public-store palette. Loaded last so admin keeps its existing theme. */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --surface-secondary: #f1f3f6;
+  --surface-input: #f7f8fa;
+  --text: #111827;
+  --text-secondary: #667085;
+  --text-muted: #98a2b3;
+  --border: #e1e5ea;
+  --red: #ff1e35;
+  --red-hover: #e81930;
+  --green: #22c55e;
+  --shadow-sm: 0 3px 12px rgba(16,24,40,.06);
+  --shadow-md: 0 5px 18px rgba(16,24,40,.08);
+  background: var(--bg);
+  color-scheme: light;
+}
+.gaming-storefront {
+  --bg-dark: var(--bg);
+  --bg-surface: var(--surface);
+  --card-bg: var(--surface);
+  /* Legacy --white is a foreground token in the public styles. */
+  --white: var(--text);
+  --text-gray: var(--text-secondary);
+  --border-color: var(--border);
+  --accent-red: var(--red);
+  --electric-blue: var(--red);
+  background: var(--bg);
+  color: var(--text);
+}
+.gaming-storefront .header,
+.gaming-storefront .header .navbar,
+.gaming-storefront .dropdown-list,
+.gaming-storefront .store-category-nav,
+.gaming-storefront .footer { background: var(--surface); border-color: var(--border); }
+.gaming-storefront .store-wordmark,
+.gaming-storefront .navbar-link,
+.gaming-storefront .nav-action-btn,
+.gaming-storefront .nav-action-text,
+.gaming-storefront .nav-open-btn,
+.gaming-storefront .nav-close-btn,
+.gaming-storefront .store-category-nav a { color: var(--text); }
+.gaming-storefront .store-wordmark-accent { color: var(--red); }
+.gaming-storefront .navbar-link:hover,
+.gaming-storefront .navbar-link.active,
+.gaming-storefront .navbar-link.is-active,
+.gaming-storefront .store-category-nav a:hover,
+.gaming-storefront .store-category-nav .is-active { color: var(--red); }
+.gaming-storefront .dropdown-link:hover { background: var(--surface-input); color: var(--red); }
+.gaming-storefront .header-search,
+.catalog-page .shop-search { background: #f4f6f8; border-color: #dee2e7; }
+.gaming-storefront .header-search input,
+.gaming-storefront .shop-search input,
+.gaming-storefront .search-input,
+.gaming-storefront .newsletter-input { color: var(--text); }
+.gaming-storefront .header-search input::placeholder,
+.gaming-storefront .shop-search input::placeholder { color: #8a94a3; }
+.gaming-storefront .header-search button,
+.gaming-storefront .shop-search button,
+.gaming-storefront .button-primary,
+.builder-page .btn { background: var(--red); color: #fff; }
+.gaming-storefront .header-search button:hover,
+.gaming-storefront .shop-search button:hover,
+.gaming-storefront .button-primary:hover,
+.builder-page .btn:hover { background: var(--red-hover); }
+.gaming-storefront .button-whatsapp,
+.gaming-storefront .header-whatsapp,
+.gaming-storefront .mobile-whatsapp { color: #16833d; border-color: var(--whatsapp-green); }
+.gaming-storefront .button-whatsapp:hover,
+.builder-page .btn.builder-whatsapp,
+.builder-page .btn.builder-whatsapp:hover { background: var(--whatsapp-green); color: #072b13; }
+
+/* The bright-room artwork includes its own empty left half. Fill the banner
+   width so the actual monitor begins at the center, with its tower in frame. */
+.gaming-storefront .hero-section {
+  background-color: var(--surface);
+  background-image: linear-gradient(90deg, #fff 0%, #fff 36%, rgba(255,255,255,.85) 40%, rgba(255,255,255,.15) 47%, rgba(255,255,255,0) 51%), url('../images/setup%20red.png');
+  background-size: 100% 100%, 100% auto;
+  background-position: center, center 24%;
+}
+.gaming-storefront .hero-copy h1 { color: var(--text); }
+.gaming-storefront .hero-copy .eyebrow,
+.gaming-storefront .hero-copy h1 span { color: var(--red); }
+.gaming-storefront .hero-description,
+.gaming-storefront .section-subtitle,
+.gaming-storefront .product-card__specs,
+.gaming-storefront .why-store-list p,
+.gaming-storefront .why-store-heading .eyebrow,
+.gaming-storefront .store-contact-panel p { color: var(--text-secondary); }
+.gaming-storefront .prebuilt-section { background: var(--surface); }
+.gaming-storefront .components-section { background: var(--bg); }
+.gaming-storefront .why-store-section { background: var(--surface-secondary); }
+.gaming-storefront .store-contact-panel,
+.gaming-storefront .hero-product,
+.gaming-storefront .hero-product__caption,
+.gaming-storefront .visual-category-card,
+.gaming-storefront .product-card,
+.builder-page .category-row,
+.builder-page .builder-summary,
+.builder-page .modal-content { background: var(--surface); border-color: var(--border); box-shadow: var(--shadow-sm); }
+.gaming-storefront .visual-category-card > span { background: var(--surface); color: var(--text); }
+.gaming-storefront .visual-category-card > span ion-icon { color: var(--red); }
+.gaming-storefront .visual-category-card:hover,
+.gaming-storefront .product-card:hover { border-color: #c8cfd8; box-shadow: var(--shadow-md); }
+.gaming-storefront .visual-category-card { transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+/* White product artwork uses one shared frame, without cinematic crop zooms. */
+.gaming-storefront .visual-category-card[data-category] { --category-image-scale: 1; }
+.gaming-storefront .visual-category-card .category-photo { background: var(--surface); }
+.gaming-storefront .visual-category-card[data-category] .category-photo img {
+  object-fit: contain;
+  object-position: center;
+  padding: 8px;
+}
+.gaming-storefront .product-card__title { color: var(--text); }
+.gaming-storefront .product-card__price,
+.catalog-page .product-grid .product-card__price,
+.detail-page .product-detail__price,
+.detail-page .mobile-order-bar strong { color: var(--red); }
+.gaming-storefront .product-card__category,
+.gaming-storefront .product-detail__category { background: #fff1f3; color: var(--red); border-color: #ffd0d6; }
+.gaming-storefront .product-card__stock,
+.detail-page .product-detail__stock,
+.detail-page .product-detail__order-row,
+.detail-page .product-detail__order-note,
+.detail-page .mobile-order-bar > div { color: var(--text-secondary); }
+.gaming-storefront .product-card__stock.is-available,
+.detail-page .product-detail__stock.is-available { color: var(--green); }
+.gaming-storefront .product-card__stock.is-available > span,
+.detail-page .product-detail__stock.is-available > span { background: var(--green); box-shadow: none; }
+
+.gaming-storefront .product-card .product-card__media,
+.gaming-storefront .product-card .photo-stage,
+.catalog-page .product-grid .photo-stage,
+.detail-page .product-gallery .product-gallery__main.photo-stage,
+.gaming-storefront .product-card .product-card__gallery,
+.gaming-storefront .product-card .product-card__thumb,
+.catalog-page .product-grid .product-card__gallery,
+.catalog-page .product-grid .product-card__thumb,
+.detail-page .product-gallery__thumb {
+  --photo-surface: var(--surface-input);
+  background: var(--surface-input);
+  border-color: var(--border);
+}
+.gaming-storefront .product-card .product-card__thumb.is-active,
+.catalog-page .product-grid .product-card__thumb.is-active,
+.detail-page .product-gallery__thumb.is-active,
+.detail-page .product-gallery__thumb:hover { border-color: var(--red); }
+.gaming-storefront .photo-stage__placeholder { color: var(--text-secondary); }
+.gaming-storefront .prebuilt-section .product-shelf__control { background: var(--surface); color: var(--red); border-color: var(--border); box-shadow: var(--shadow-sm); }
+.gaming-storefront .components-section .category-link,
+.catalog-page .shop-filter-list .filter-btn { background: #f2f4f7; color: #344054; border-color: #dde2e8; }
+.gaming-storefront .components-section .category-link:hover,
+.catalog-page .shop-filter-list .filter-btn:hover:not(.active) { background: var(--surface-secondary); color: var(--red); border-color: #c8cfd8; }
+.catalog-page .shop-filter-list .filter-btn.active { background: var(--red); color: #fff; border-color: var(--red); }
+.catalog-page .shop-select select,
+.detail-page .product-detail__order-row input { background: var(--surface); color: var(--text); border-color: var(--border); }
+.detail-page { background: var(--surface); }
+.detail-page .product-specifications li { color: var(--text-secondary); }
+.detail-page .mobile-order-bar { background: var(--surface); border-color: var(--border); }
+.detail-page .product-gallery__index { background: var(--surface); color: var(--red); box-shadow: var(--shadow-sm); }
+.builder-page .modal-overlay { background: rgba(16,24,40,.4); }
+.builder-page .modal-item { background: var(--surface-input); }
+.builder-page .modal-item span,
+.builder-page .modal-item strong,
+.builder-page #total-price { color: var(--text); }
+.builder-page .modal-item img { background: var(--surface-input) !important; }
+.gaming-storefront .demo-preview-banner { background: #fff1f3; color: var(--text-secondary); border-color: #ffd0d6; }
+.gaming-storefront .demo-preview-banner strong,
+.gaming-storefront .demo-preview-banner a { color: var(--red); }
+.gaming-storefront .product-card__order.product-card__order--preview[aria-disabled='true'],
+.gaming-storefront .product-card__order.product-card__order--preview[aria-disabled='true']:hover,
+.detail-page .product-detail__order--preview { background: #fff1f3; color: var(--red); }
+.gaming-storefront .footer-bottom { border-color: var(--border); }
+.gaming-storefront .newsletter-input { background: var(--surface-input); }
+.gaming-storefront a:focus-visible,
+.gaming-storefront button:focus-visible,
+.gaming-storefront input:focus-visible,
+.gaming-storefront select:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+
+@media (min-width: 681px) {
+  .gaming-storefront .hero-copy { max-width: 42%; }
+  .gaming-storefront .hero-copy h1 { font-size: clamp(3.6rem, 5vw, 8rem); }
+  .gaming-storefront .hero-copy h1 span { font-size: clamp(2.3rem, 3.2vw, 5rem); }
+}
+@media (max-width: 680px) {
+  .gaming-storefront .hero-section {
+    background-image: linear-gradient(180deg, #fff 0%, #fff 40%, rgba(255,255,255,.94) 49%, rgba(255,255,255,.25) 64%, rgba(255,255,255,0) 78%), url('../images/setup%20red.png');
+    background-size: 100% 100%, auto 62%;
+    background-position: center, right bottom;
+  }
+  .gaming-storefront .visual-category-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+  .gaming-storefront .visual-category-card .category-photo { height: 108px; flex-basis: 108px; }
+  .gaming-storefront .visual-category-card > span { font-size: clamp(.9rem, 2.8vw, 1.4rem); gap: 3px; padding-inline: 3px; }
+}

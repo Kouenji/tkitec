@@ -258,42 +258,15 @@
     }
   </style>
     <link rel="stylesheet" href="./assets/css/product.css">
+  <link rel="stylesheet" href="./assets/css/homepage.css">
+  <link rel="stylesheet" href="./assets/css/store-pages.css">
+  <link rel="stylesheet" href="./assets/css/light-theme.css?v=tki-tec-2">
+  <script src="./assets/js/site-shell.js?v=tki-tec-2" defer></script>
 </head>
 
-<body id="top">
+<body id="top" class="gaming-storefront detail-page">
 
-  <header class="header" data-header>
-        <div class="container header-inner">
-            <a href="index.html" class="logo" aria-label="Tki Tec home"><img src="./assets/images/logo-black.png" alt="Tki Tec logo"></a>
-            <form class="header-search" action="shop.html" method="get" role="search">
-                <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
-                <input type="search" name="search" placeholder="Search components, brands, specs..." aria-label="Search products">
-                <button type="submit" aria-label="Search products"><ion-icon name="arrow-forward-outline"></ion-icon></button>
-            </form>
-            <button class="nav-open-btn" data-nav-open-btn aria-label="Open menu"><ion-icon name="menu-outline"></ion-icon></button>
-            <nav class="navbar" data-navbar aria-label="Main navigation">
-                <div class="overlay" data-overlay></div>
-                <button class="nav-close-btn" data-nav-close-btn aria-label="Close menu"><ion-icon name="close-outline"></ion-icon></button>
-                <ul class="navbar-list">
-                    <li><a href="index.html" class="navbar-link">Home</a></li>
-                    <li><a href="shop.html?cat=all" class="navbar-link">Shop</a></li>
-                    <li class="navbar-item dropdown">
-                        <a href="shop.html?cat=all" class="navbar-link">Categories <ion-icon name="chevron-down-outline"></ion-icon></a>
-                        <ul class="dropdown-list">
-                            <li><a href="shop.html?cat=gpu" class="dropdown-link">GPUs</a></li>
-                            <li><a href="shop.html?cat=cpu" class="dropdown-link">CPUs</a></li>
-                            <li><a href="shop.html?cat=motherboard" class="dropdown-link">Motherboards</a></li>
-                            <li><a href="shop.html?cat=ram" class="dropdown-link">RAM</a></li>
-                            <li><a href="shop.html?cat=storage" class="dropdown-link">Storage</a></li>
-                            <li><a href="shop.html?cat=peripherals" class="dropdown-link">Accessories</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="build.html" class="navbar-link">PC Builder</a></li>
-                </ul>
-                <a class="header-whatsapp" data-whatsapp-contact href="https://wa.me/" target="_blank" rel="noopener noreferrer"><ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon><span>WhatsApp</span></a>
-      </nav>
-    </div>
-  </header>
+  <div data-store-shell></div>
 
     <main class="container product-detail-shell">
         <a class="detail-back-link" href="shop.html?cat=all"><ion-icon name="arrow-back-outline" aria-hidden="true"></ion-icon> Back to products</a>
@@ -311,7 +284,7 @@
   <footer class="footer">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
       <div class="footer-brand">
-        <a href="index.html" class="logo"><img src="./assets/images/logo-black.png" alt="Tki Tec" height="35"></a>
+        <a href="index.html" class="logo"><img src="./assets/images/logo.png" alt="Tki Tec" height="35"><span class="store-wordmark">TKI <span class="store-wordmark-accent">TEC</span></span></a>
         <p class="footer-text" style="font-size: 1.2rem; color: var(--text-gray); margin-top: 5px;">Your Tech Destination</p>
       </div>
       
@@ -344,6 +317,8 @@
                 return;
             }
             globalItem = item;
+            document.body.dataset.storeCategory = item.category;
+            window.TkiShell?.setActiveCategory(item.category);
 
             const demoItem = window.TkiStorefront.isDemoProduct(item);
             const images = window.TkiStorefront.productImages(item, { includePromotional: false });

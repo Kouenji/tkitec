@@ -6,14 +6,14 @@
   # 1. CUSTOM VARIABLES
 \*--------------------------------------------------------------------------------*/
 :root {
-  --bg-dark: #0d1215;
-  --bg-surface: #151e22;
+  --bg-dark: #14191f;
+  --bg-surface: #1a2026;
   --accent-red: #d65b61;
   --electric-blue: var(--accent-red);
   --deep-blue: #67292f;
-  --white: #f0f4f4;
-  --text-gray: #97a7aa;
-  --border-color: #29383c;
+  --white: #f7f8fa;
+  --text-gray: #a8b0ba;
+  --border-color: rgba(255,255,255,.14);
   --accent-amber: #f2bd59;
   --whatsapp-green: #25d366;
   --ff-roboto: 'IBM Plex Sans', sans-serif;
@@ -1201,8 +1201,8 @@ button, input, select { font: inherit; }
 
 /* Softer premium retail finish */
 :root {
-  --surface-raised: #172124;
-  --surface-hover: #1c292c;
+  --surface-raised: #1a2026;
+  --surface-hover: #232a32;
   --radius-card: 16px;
   --radius-control: 12px;
 }
@@ -1548,7 +1548,7 @@ button, input, select { font: inherit; }
 .prebuilt-section { padding-block: 28px 32px; background: #101719; }
 .components-section { padding-block: 32px 40px; border: 0; background: var(--bg-dark); }
 .prebuilt-section .section-heading h2, .components-section .section-heading h2 { margin-top: 0; }
-.components-section .category-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.components-section .category-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .components-section .category-link { grid-template-columns: minmax(0, 1fr) auto; }
 .components-inventory { margin-top: 24px; }
 .components-inventory .section-heading { margin-bottom: 14px; }
@@ -1763,3 +1763,9 @@ button, input, select { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .photo-stage > img { transition: none; }
 }
+
+/* Shared readable dark surfaces for controls and navigation. */
+.header { background: #151a20; }
+.header .navbar { background-color: #151a20; }
+.dropdown-list, .header-search, .shop-search, .shop-select select { background-color: #232a32; }
+input::placeholder, textarea::placeholder, .photo-stage__placeholder { color: var(--text-gray); }

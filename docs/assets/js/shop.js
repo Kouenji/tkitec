@@ -32,7 +32,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const renderProducts = () => {
         const filtered = window.TkiStorefront.filterProducts(products, { category, search, sort });
         const categoryName = window.TkiStorefront.categoryLabel(category);
-        pageTitle.textContent = search ? `Search results` : category === 'all' ? 'Hardware collection' : `${categoryName} collection`;
+        const titles = { prebuilt: 'Prebuilt PCs', gpu: 'GPUs', cpu: 'CPUs', ram: 'RAM', storage: 'Storage', peripherals: 'Accessories', motherboard: 'Motherboards' };
+        pageTitle.textContent = search ? 'Search results' : category === 'all' ? 'Hardware' : titles[category] || categoryName;
+        document.getElementById('pageDescription').textContent = search ? 'Find the hardware for your next setup.' : category === 'prebuilt' ? 'Gaming desktops ready to order.' : 'Components for your next setup.';
+        window.TkiShell?.setActiveCategory(category);
         itemCount.textContent = `${filtered.length} ${filtered.length === 1 ? 'product' : 'products'}${search ? ` matching “${search}”` : ''}`;
         emptyState.hidden = filtered.length > 0;
         productGrid.innerHTML = filtered.map(product => window.TkiStorefront.renderProductCard(product)).join('');

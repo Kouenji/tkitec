@@ -124,8 +124,7 @@
         const prebuiltProduct = String(product.category || '').toLowerCase() === 'prebuilt';
         const cardClass = prebuiltProduct ? 'product-card--prebuilt' : 'product-card--component';
         const imageClass = prebuiltProduct ? 'product-card__image-frame--photo' : 'product-card__image-frame--packshot';
-        const firstSpec = String(product.specs || 'Tki Tec verified hardware').split(/\r?\n/)[0].trim();
-        const shortSpec = firstSpec.length > 112 ? `${firstSpec.slice(0, 109)}...` : firstSpec;
+        const keySpecs = String(product.specs || '').split(/\r?\n/).map(spec => spec.trim()).filter(Boolean).slice(0, 4);
         const demoProduct = isDemoProduct(product);
         const detailUrl = `product.html?id=${encodeURIComponent(String(product.id || ''))}`;
         const orderMessage = window.createProductOrderMessage(product, options.quantity || 1);
@@ -159,11 +158,11 @@
                 <div class="product-card__content">
                     <span class="product-card__category">${category}</span>
                     <${demoProduct ? 'div' : 'a'} class="product-card__title-link${demoProduct ? ' product-card__title-link--preview' : ''}"${demoProduct ? '' : ` href="${detailUrl}"`}><h3 class="product-card__title">${name}</h3></${demoProduct ? 'div' : 'a'}>
+                    <p class="product-card__specs">${keySpecs.map(escapeHtml).join('<br>')}</p>
                     <p class="product-card__price">${formatPrice(product.price)}</p>
                     <p class="product-card__stock ${stockAvailable ? 'is-available' : 'is-unavailable'}">
                         <span aria-hidden="true"></span>${stockAvailable ? 'Available' : 'Out of stock'}
                     </p>
-                    <p class="product-card__specs">${escapeHtml(shortSpec)}</p>
                     ${orderAction}
                 </div>
             </article>`;

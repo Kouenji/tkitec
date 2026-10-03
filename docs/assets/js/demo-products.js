@@ -114,7 +114,7 @@ window.TkiDemoProducts = [
     },
     {
         id: 'demo-psu-002', name: 'Cooler Master MWE 650 Bronze V2', category: 'psu', price: 21800, stock: 4,
-        image: './assets/images/accessoires pc.jpg', specs: '650W · 80 PLUS Bronze\n120mm HDB fan'
+        image: './assets/images/ pc.jpg', specs: '650W · 80 PLUS Bronze\n120mm HDB fan'
     },
     {
         id: 'demo-case-001', name: 'DeepCool CH560 Digital Airflow Case', category: 'case', price: 37500, stock: 1,

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>Tki Tec — Admin dashboard</title>
-  <link rel="icon" href="./assets/images/logo-black.png">
+  <link rel="icon" href="./assets/images/logo.png">
   <link rel="stylesheet" href="./assets/css/admin.css">
   <script>if (!localStorage.getItem('adminToken')) window.location.replace('login.html');</script>
   <script src="./assets/js/admin.js" defer></script>
@@ -13,7 +13,7 @@
 <body>
   <a class="skip-link" href="#main">Skip to management</a>
   <header class="topbar">
-    <a class="brand" href="admin.html" aria-label="Tki Tec admin home"><span class="brand-mark" aria-hidden="true">T</span><strong>TKI TEC</strong><span class="brand-divider">/</span><span class="brand-caption">ADMIN</span></a>
+    <a class="brand" href="admin.html" aria-label="Tki Tec admin home"><img class="brand-logo" src="./assets/images/logo.png" alt=""><strong>TKI TEC</strong><span class="brand-divider">/</span><span class="brand-caption">ADMIN</span></a>
     <nav class="tabs" role="tablist" aria-label="Management sections">
       <button id="productsTab" role="tab" aria-selected="true" aria-controls="productsView">Products</button>
       <button id="ordersTab" role="tab" aria-selected="false" aria-controls="ordersView" tabindex="-1">Orders</button>
@@ -80,5 +80,6 @@
       <p class="form-message" role="status" aria-live="polite" hidden></p>
     </form>
   </template>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
 </body>
 </html>

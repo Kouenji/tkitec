@@ -15,6 +15,7 @@ async function setup(t, width = 1440) {
     const context = await browser.newContext({ viewport: { width, height: 1000 } });
     t.after(() => context.close());
     await context.addInitScript(() => localStorage.setItem('adminToken', 'test-token'));
+    await context.addInitScript(() => { window.imageCompression = async file => file; });
     await context.route('**/*', r => r.request().url().startsWith(base) ? r.continue() : r.abort());
     let products = Array.from({ length: 15 }, (_, i) => product(i + 1));
     await context.route('**/api/products', r => r.request().method() === 'GET' ? r.fulfill({ json: products }) : r.continue());
@@ -27,6 +28,9 @@ async function setup(t, width = 1440) {
 }
 test('products open by default with search, pagination and a separate orders view', async t => {
     const { page } = await setup(t);
+    const logo = page.locator('.brand img');
+    assert.equal(await logo.isVisible(), true);
+    assert.ok(await logo.evaluate(image => image.complete && image.naturalWidth > 0));
     assert.equal(await page.locator('#productsView').isVisible(), true);
     assert.equal(await page.locator('#ordersView').isVisible(), false);
     assert.equal(await page.locator('.product-card').count(), 12);
